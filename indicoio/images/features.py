@@ -1,5 +1,3 @@
-import requests
-
 from indicoio.utils.image import image_preprocess
 from indicoio.utils.api import api_handler
 

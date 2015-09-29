@@ -1,7 +1,7 @@
 import os
 import unittest
 import textwrap
-from StringIO import StringIO
+from six import StringIO
 
 from indicoio import config
 from indicoio.config import Settings
