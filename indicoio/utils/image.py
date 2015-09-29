@@ -2,11 +2,12 @@
 Image Utils
 Handles preprocessing images before they are sent to the server
 """
-import os.path, base64, StringIO, re, warnings
+import os.path, base64, re, warnings
+from six import BytesIO, string_types, PY3
 
 from PIL import Image
 
-from indicoio.utils.errors import IndicoError, DataStructureException
+from indicoio.utils.errors import IndicoError
 
 B64_PATTERN = re.compile("^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)")
 
@@ -18,7 +19,7 @@ def image_preprocess(image, size=None, min_axis=None, batch=False):
     if batch:
         return [image_preprocess(img, batch=False) for img in image]
 
-    if isinstance(image, basestring):
+    if isinstance(image, string_types):
         b64_str = re.sub('^data:image/.+;base64,', '', image)
         if os.path.isfile(image):
             # check type of element
@@ -45,12 +46,12 @@ def image_preprocess(image, size=None, min_axis=None, batch=False):
         out_image = resize_image(out_image, size, min_axis)
 
     # convert to base64
-    temp_output = StringIO.StringIO()
+    temp_output = BytesIO()
     out_image.save(temp_output, format='PNG')
     temp_output.seek(0)
     output_s = temp_output.read()
 
-    return base64.b64encode(output_s)
+    return base64.b64encode(output_s).decode('utf-8') if PY3 else base64.b64encode(output_s)
 
 
 def resize_image(image, size, min_axis):
@@ -87,6 +88,6 @@ def get_element_type(_list, dimens):
     elements in the inner list.
     """
     elem = _list
-    for _ in xrange(len(dimens)):
+    for _ in range(len(dimens)):
         elem = elem[0]
     return type(elem)

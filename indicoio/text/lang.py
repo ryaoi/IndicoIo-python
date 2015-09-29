@@ -1,5 +1,4 @@
 from indicoio.utils.api import api_handler
-import indicoio.config as config
 
 def language(text, cloud=None, batch=False, api_key=None, version=None, **kwargs):
     """

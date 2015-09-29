@@ -15,7 +15,7 @@ class ImageRecognitionTest(unittest.TestCase):
         response = image_recognition(test_data, api_key = self.api_key, top_n=3)
         self.assertIsInstance(response, dict)
         self.assertEqual(len(response), 3)
-        self.assertIsInstance(response.values()[0], float)
+        self.assertIsInstance(list(response.values())[0], float)
 
     def test_batch_image_recognition(self):
         test_data = os.path.normpath(os.path.join(DIR, "data", "fear.png"))
@@ -23,7 +23,7 @@ class ImageRecognitionTest(unittest.TestCase):
         self.assertIsInstance(response, list)
         self.assertIsInstance(response[0], dict)
         self.assertEqual(len(response[0]), 3)
-        self.assertIsInstance(response[0].values()[0], float)
+        self.assertIsInstance(list(response[0].values())[0], float)
 
 if __name__ == "__main__":
     unittest.main()
