@@ -1,9 +1,10 @@
 import os
-from StringIO import StringIO
+try:
+    import configparser
+except ImportError:
+    import ConfigParser as configparser
 
-import ConfigParser
-
-class Settings(ConfigParser.ConfigParser):
+class Settings(configparser.ConfigParser):
 
     def __init__(self, *args, **kwargs):
         """
@@ -11,12 +12,18 @@ class Settings(ConfigParser.ConfigParser):
         """
         self.files = kwargs.pop('files')
 
-        ConfigParser.ConfigParser.__init__(self, *args, **kwargs)
+        configparser.ConfigParser.__init__(self, *args, **kwargs)
 
         for fd in self.files:
             try:
-                self.readfp(fd)
+                self.read_file(fd)
             except AttributeError:
+                # python 2
+                try:
+                    self.readfp(fd)
+                except AttributeError:
+                    self.read(fd)
+            except configparser.MissingSectionHeaderError:
                 self.read(fd)
 
         self.auth_settings = self.get_section('auth')
@@ -24,11 +31,11 @@ class Settings(ConfigParser.ConfigParser):
 
     def get_section(self, section):
         """
-        Retrieve a ConfigParser section as a dictionary, default to {}
+        Retrieve a configparser section as a dictionary, default to {}
         """
         try:
             return dict(self.items(section))
-        except ConfigParser.NoSectionError:
+        except configparser.NoSectionError:
             return {}
 
     def cloud(self):

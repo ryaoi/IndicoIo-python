@@ -1,8 +1,5 @@
-import requests
-
 from indicoio.utils.api import api_handler
 from indicoio.utils.image import image_preprocess
-import indicoio.config as config
 
 def content_filtering(image, cloud=None, batch=False, api_key=None, version=None, **kwargs):
     """

@@ -6,6 +6,7 @@ from PIL import Image
 from requests import ConnectionError
 
 from nose.plugins.skip import Skip, SkipTest
+from six import PY3
 
 from indicoio import config
 from indicoio import political, sentiment, fer, facial_features, facial_localization, content_filtering, language, image_features, text_tags
@@ -189,6 +190,7 @@ class BatchAPIRun(unittest.TestCase):
                             analyze_text,
                             "this shouldn't work",
                             apis=["fer", "sentiment", "facial_features"])
+
     def test_batch_multi_bad_mixed_api(self):
         self.assertRaises(IndicoError,
                             analyze_text,
@@ -250,7 +252,8 @@ class FullAPIRun(unittest.TestCase):
 
         results = keywords(text, language = 'detect')
         sorted_results = sorted(results.keys(), key=lambda x:results.get(x), reverse=True)
-        self.assertTrue(set(map(lambda x: x.encode("utf-8"), results.keys())).issubset(words))
+        result_keys = results.keys() if PY3 else map(lambda x: x.encode("utf-8"), results.keys())
+        self.assertTrue(set(result_keys).issubset(words))
 
         results = keywords(text, top_n=3)
         assert len(results) is 3
@@ -266,7 +269,8 @@ class FullAPIRun(unittest.TestCase):
         results = keywords(text, language = 'French')
         sorted_results = sorted(results.keys(), key=lambda x:results.get(x), reverse=True)
 
-        self.assertTrue(set(map(lambda x: x.encode("utf-8"), results.keys())).issubset(words))
+        result_keys = results.keys() if PY3 else map(lambda x: x.encode("utf-8"), results.keys())
+        self.assertTrue(set(result_keys).issubset(words))
 
         results = keywords(text, top_n=3)
         assert len(results) is 3

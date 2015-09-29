@@ -4,7 +4,7 @@ Handles making requests to the IndicoApi Server
 
 import json, requests
 
-from indicoio.utils.errors import IndicoError, DataStructureException
+from indicoio.utils.errors import IndicoError
 from indicoio import JSON_HEADERS
 from indicoio import config
 
@@ -13,6 +13,10 @@ def api_handler(arg, cloud, api, url_params=None, **kwargs):
     Sends finalized request data to ML server and receives response.
     """
 
+    if type(arg) == bytes:
+        arg = arg.decode('utf-8')
+    if type(arg) == list:
+        arg = [a.decode('utf-8') if type(arg) == bytes else a for a in arg]
     data = {'data': arg}
     data.update(**kwargs)
     json_data = json.dumps(data)
