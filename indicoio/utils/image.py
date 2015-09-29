@@ -53,7 +53,6 @@ def image_preprocess(image, size=None, min_axis=None, batch=False):
 
     return base64.b64encode(output_s).decode('utf-8') if PY3 else base64.b64encode(output_s)
 
-
 def resize_image(image, size, min_axis):
     if min_axis:
         min_idx, other_idx = (0,1) if image.size[0] < image.size[1] else (1,0)
@@ -64,8 +63,8 @@ def resize_image(image, size, min_axis):
                 Warning
             )
         size_arr = [0,0]
-        size_arr[min_idx] = min_axis
-        size_arr[other_idx] = int(min_axis * aspect)
+        size_arr[min_idx] = size
+        size_arr[other_idx] = int(size * aspect)
         image = image.resize(tuple(size_arr))
     elif size:
         image = image.resize(size)
