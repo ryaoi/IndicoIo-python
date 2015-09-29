@@ -46,7 +46,7 @@ def intersections(data, apis = None, **kwargs):
             "Both `apis` must accept the same kind of input to use the intersections API"
         )
 
-    cloud = kwargs.get("cloud", None)
+    cloud = kwargs.pop("cloud", None)
 
     url_params = {
         'batch': False,
