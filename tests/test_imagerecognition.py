@@ -25,5 +25,10 @@ class ImageRecognitionTest(unittest.TestCase):
         self.assertEqual(len(response[0]), 3)
         self.assertIsInstance(list(response[0].values())[0], float)
 
+    def test_expected_response(self):
+        test_data = os.path.normpath(os.path.join(DIR, "data", "keyboard.jpg"))
+        response = image_recognition(test_data, api_key = self.api_key, top_n=3)
+        assert "space bar" in response.keys()
+
 if __name__ == "__main__":
     unittest.main()

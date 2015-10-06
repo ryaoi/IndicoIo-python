@@ -21,6 +21,6 @@ def image_recognition(image, cloud=None, batch=False, api_key=None, version=None
     :type image: str
     :rtype: dict containing classifications
     """
-    image = image_preprocess(image, size=144, min_axis=True, batch=batch)
+    image = image_preprocess(image, batch=batch, size=144, min_axis=True)
     url_params = {"batch": batch, "api_key": api_key, "version": version}
     return api_handler(image, cloud=cloud, api="imagerecognition", url_params=url_params, **kwargs)
