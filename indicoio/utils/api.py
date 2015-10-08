@@ -28,7 +28,7 @@ def api_handler(arg, cloud, api, url_params=None, **kwargs):
 
     if response.status_code == 503 and cloud != None:
         raise IndicoError("Private cloud '%s' does not include api '%s'" % (cloud, api))
-
+        
     json_results = response.json()
     results = json_results.get('results', False)
     if results is False:
