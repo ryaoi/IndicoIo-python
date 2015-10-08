@@ -62,6 +62,12 @@ class BatchAPIRun(unittest.TestCase):
         response = political(test_data, api_key=self.api_key)
         self.assertTrue(isinstance(response, list))
 
+    def test_url_support(self):
+        test_url = "https://s3-us-west-2.amazonaws.com/indico-test-data/face.jpg"
+        response = fer(test_url, api_key=self.api_key)
+        self.assertTrue(isinstance(response, dict))
+        self.assertEqual(len(response.keys()), 6)
+
     def test_batch_fer(self):
         test_data = [os.path.normpath(os.path.join(DIR, "data/48by48.png"))]
         response = fer(test_data, api_key=self.api_key)
