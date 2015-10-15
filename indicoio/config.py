@@ -68,7 +68,8 @@ IMAGE_APIS = [
     'facial_features',
     'image_features',
     'image_recognition',
-    'content_filtering'
+    'content_filtering',
+    'facial_localization'
 ]
 
 OTHER_APIS = [
