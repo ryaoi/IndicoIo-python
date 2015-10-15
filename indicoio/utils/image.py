@@ -17,7 +17,7 @@ def image_preprocess(image, size=None, min_axis=None, batch=False):
     resizing and image data/structure standardizing.
     """
     if batch:
-        return [image_preprocess(img, batch=False) for img in image]
+        return [image_preprocess(img, size=size, min_axis=min_axis, batch=False) for img in image]
 
     if isinstance(image, string_types):
         b64_str = re.sub('^data:image/.+;base64,', '', image)
@@ -40,7 +40,7 @@ def image_preprocess(image, size=None, min_axis=None, batch=False):
             raise IndicoError("Please ensure the numpy array is acceptable by PIL. Values must be between 0 and 1 or between 0 and 255 in greyscale, rgb, or rgba format.")
 
     else:
-        raise IndicoError("Image must be a filepath, base64 encoded string, or a numpy array")
+        raise IndicoError("Image must be a filepath, url, base64 encoded string, or a numpy array")
 
     if size or min_axis:
         out_image = resize_image(out_image, size, min_axis)
