@@ -14,7 +14,7 @@ def api_handler(arg, cloud, api, url_params=None, **kwargs):
     """
     Sends finalized request data to ML server and receives response.
     """
-
+    url_params = url_params or {}
     if type(arg) == bytes:
         arg = arg.decode('utf-8')
     if type(arg) == list:
