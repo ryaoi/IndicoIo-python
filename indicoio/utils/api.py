@@ -2,7 +2,9 @@
 Handles making requests to the IndicoApi Server
 """
 
-import json, requests
+import json
+import requests
+import warnings
 
 from indicoio.utils.errors import IndicoError
 from indicoio import JSON_HEADERS
@@ -12,7 +14,7 @@ def api_handler(arg, cloud, api, url_params=None, **kwargs):
     """
     Sends finalized request data to ML server and receives response.
     """
-
+    url_params = url_params or {}
     if type(arg) == bytes:
         arg = arg.decode('utf-8')
     if type(arg) == list:
@@ -25,6 +27,10 @@ def api_handler(arg, cloud, api, url_params=None, **kwargs):
 
     url = create_url(host, api, dict(kwargs, **url_params))
     response = requests.post(url, data=json_data, headers=JSON_HEADERS)
+
+    warning = response.headers.get('x-warning')
+    if warning:
+        warnings.warn(warning)
 
     if response.status_code == 503 and cloud != None:
         raise IndicoError("Private cloud '%s' does not include api '%s'" % (cloud, api))
