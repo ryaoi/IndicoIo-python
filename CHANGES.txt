@@ -39,3 +39,4 @@ v0.9.3 Tue Sept 22 -- Add versioning, image recognition api
 v0.10.0 Tue Sept 29 -- Add Python 3 support
 v0.10.1 Wed Sept 30 -- Image resizing bug fix
 v0.10.2 Thu Oct 14 -- URL support for image APIs
+v0.10.3 Fri Oct 29 -- Issue warnings when out of credits

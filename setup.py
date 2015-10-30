@@ -9,7 +9,7 @@ except ImportError:
 
 setup(
     name="IndicoIo",
-    version="0.10.2",
+    version="0.10.3",
     packages=[
         "indicoio",
         "indicoio.text",
@@ -53,6 +53,7 @@ setup(
     install_requires=[
         "requests >= 1.2.3",
         "six >= 1.3.0",
-        "pillow >= 2.8.1"
-    ],
+        "pillow >= 2.8.1",
+        "mock >= 1.3.0"
+    ]
 )
