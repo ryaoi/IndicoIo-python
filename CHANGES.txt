@@ -40,3 +40,4 @@ v0.10.0 Tue Sept 29 -- Add Python 3 support
 v0.10.1 Wed Sept 30 -- Image resizing bug fix
 v0.10.2 Thu Oct 14 -- URL support for image APIs
 v0.10.3 Fri Oct 29 -- Issue warnings when out of credits
+v0.11.0 Fri Dec 04 -- Custom APIs, personality and persona APIs
