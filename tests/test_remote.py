@@ -10,13 +10,8 @@ from six import PY3
 
 from indicoio import config
 from indicoio import political, sentiment, fer, facial_features, facial_localization, content_filtering, language, image_features, text_tags
-from indicoio import batch_political, batch_sentiment, batch_fer, batch_content_filtering, batch_facial_features
-from indicoio import batch_language, batch_image_features, batch_text_tags
-from indicoio import keywords, batch_keywords
-from indicoio import sentiment_hq, batch_sentiment_hq
-from indicoio import twitter_engagement, batch_twitter_engagement
-from indicoio import named_entities, batch_named_entities
-from indicoio import intersections, analyze_image, analyze_text, batch_analyze_image, batch_analyze_text
+from indicoio import keywords, sentiment_hq, twitter_engagement, named_entities, intersections, analyze_image, analyze_text
+from indicoio import personas, personality
 from indicoio.utils.errors import IndicoError
 
 DIR = os.path.dirname(os.path.realpath(__file__))
@@ -56,6 +51,31 @@ class BatchAPIRun(unittest.TestCase):
         response = sentiment_hq(test_data, api_key=self.api_key)
         self.assertTrue(isinstance(response, list))
         self.assertTrue(response[0] < 0.5)
+
+    def test_batch_twitter_engagement(self):
+        test_string = "Worst song ever."
+        response = twitter_engagement([test_string, test_string])
+
+        self.assertTrue(isinstance(response, list))
+        self.assertIsInstance(response[0], float)
+        self.assertEqual(response[0], response[1])
+
+    def test_batch_personality(self):
+        test_string = "I love my friends!"
+        response = personality([test_string,test_string])
+        categories = ['extraversion', 'openness', 'agreeableness', 'conscientiousness']
+        self.assertTrue(isinstance(response, list))
+        self.assertIsInstance(response[0]["extraversion"], float)
+        for category in categories:
+            assert category in response[0].keys()
+        self.assertEqual(response[0]["extraversion"], response[1]["extraversion"])
+
+    def test_batch_personas(self):
+        test_string = "I love my friends!"
+        response = personas([test_string,test_string])
+        self.assertTrue(isinstance(response, list))
+        self.assertIsInstance(response[0]["commander"], float)
+        self.assertEqual(response[0]["commander"], response[1]["commander"])
 
     def test_batch_political(self):
         test_data = ["Guns don't kill people, people kill people."]
@@ -120,32 +140,19 @@ class BatchAPIRun(unittest.TestCase):
         self.assertTrue(isinstance(response[0], list))
         self.assertEqual(len(response[0]), 48)
 
-    # TODO: uncomment this test once the remote server is updated to
-    # deal with image_urls
-    # def test_batch_image_urls(self):
-    #     test_data = ['http://textfac.es/static/ico/favicon.png',
-    #                  'http://textfac.es/static/ico/favicon.png']
-    #     response = batch_facial_features(test_data, auth=self.auth)
-    #     self.assertTrue(isinstance(response, list))
-    #     self.assertTrue(isinstance(response[0], list))
-    #     self.assertEqual(len(response[0]), 48)
-
-    # TODO: add tests to test when one url is incorrect once we
-    # have decided how we are dealing with them
-
     def test_batch_image_features_greyscale(self):
         test_data = [os.path.normpath(os.path.join(DIR, "data/48by48.png"))]
         response = image_features(test_data, api_key=self.api_key)
         self.assertTrue(isinstance(response, list))
         self.assertTrue(isinstance(response[0], list))
-        self.assertEqual(len(response[0]), 2048)
+        self.assertEqual(len(response[0]), 4096)
 
     def test_batch_image_features_rgb(self):
         test_data = [os.path.normpath(os.path.join(DIR, "data/48by48rgb.png"))]
         response = image_features(test_data, api_key=self.api_key)
         self.assertTrue(isinstance(response, list))
         self.assertTrue(isinstance(response[0], list))
-        self.assertEqual(len(response[0]), 2048)
+        self.assertEqual(len(response[0]), 4096)
 
     def test_batch_language(self):
         test_data = ['clearly an english sentence']
@@ -340,13 +347,23 @@ class FullAPIRun(unittest.TestCase):
         self.assertTrue(response <= 1)
         self.assertTrue(response >= 0)
 
-    def test_batch_twitter_engagement(self):
-        test_string = "Worst song ever."
-        response = batch_twitter_engagement([test_string, test_string])
+    def test_personalities(self):
+        test_string = "I love my friends!"
+        response = personality(test_string)
 
-        self.assertTrue(isinstance(response, list))
-        self.assertIsInstance(response[0], float)
-        self.assertEqual(response[0], response[1])
+        categories = ['extraversion', 'openness', 'agreeableness', 'conscientiousness']
+        self.assertTrue(isinstance(response, dict))
+        self.assertIsInstance(response['extraversion'], float)
+        for category in categories:
+            assert category in response.keys()
+
+    def test_personas(self):
+        test_string = "I love my friends!"
+        response = personas(test_string)
+
+        self.assertTrue(isinstance(response, dict))
+        self.assertIsInstance(response["commander"], float)
+        self.assertTrue(len(response.keys()))
 
     def test_good_fer(self):
         fer_set = set(['Angry', 'Sad', 'Neutral', 'Surprise', 'Fear', 'Happy'])
@@ -443,22 +460,12 @@ class FullAPIRun(unittest.TestCase):
         self.assertEqual(len(response), 48)
         self.check_range(response)
 
-    # TODO: uncomment this test once the remote server is updated to
-    # deal with image_urls
-    # def test_image_url(self):
-    #     test_face = 'http://textfac.es/static/ico/favicon.png'
-    #     response = facial_features(test_face)
-
-    #     self.assertTrue(isinstance(response, list))
-    #     self.assertEqual(len(response), 48)
-    #     self.check_range(response)
-
     def test_good_image_features_greyscale(self):
         test_image = os.path.normpath(os.path.join(DIR, "data/48by48.png"))
         response = image_features(test_image)
 
         self.assertTrue(isinstance(response, list))
-        self.assertEqual(len(response), 2048)
+        self.assertEqual(len(response), 4096)
         self.check_range(response)
 
     def test_good_image_features_rgb(self):
@@ -466,7 +473,7 @@ class FullAPIRun(unittest.TestCase):
         response = image_features(test_image)
 
         self.assertTrue(isinstance(response, list))
-        self.assertEqual(len(response), 2048)
+        self.assertEqual(len(response), 4096)
         self.check_range(response)
 
     def test_multi_api_image(self):
@@ -582,11 +589,6 @@ class FullAPIRun(unittest.TestCase):
 
         config.cloud = temp_cloud
 
-        self.assertRaises(ConnectionError,
-                          language,
-                          test_data,
-                          cloud='indico-test')
-
     def test_set_api_key(self):
         test_data = 'clearly an english sentence'
         self.assertRaises(IndicoError,
@@ -630,7 +632,7 @@ class NumpyImagesRun(unittest.TestCase):
         response = image_features(test_image)
 
         self.assertTrue(isinstance(response, list))
-        self.assertEqual(len(response), 2048)
+        self.assertEqual(len(response), 4096)
         self.check_range(response)
 
     def test_float_RGB_numpy_arrays(self):
@@ -638,7 +640,7 @@ class NumpyImagesRun(unittest.TestCase):
         response = image_features(test_image)
 
         self.assertTrue(isinstance(response, list))
-        self.assertEqual(len(response), 2048)
+        self.assertEqual(len(response), 4096)
         self.check_range(response)
 
     def test_float_RGBA_numpy_arrays(self):
@@ -646,7 +648,7 @@ class NumpyImagesRun(unittest.TestCase):
         response = image_features(test_image)
 
         self.assertTrue(isinstance(response, list))
-        self.assertEqual(len(response), 2048)
+        self.assertEqual(len(response), 4096)
         self.check_range(response)
 
     def test_int_numpy_arrays(self):
@@ -654,7 +656,7 @@ class NumpyImagesRun(unittest.TestCase):
         response = image_features(test_image)
 
         self.assertTrue(isinstance(response, list))
-        self.assertEqual(len(response), 2048)
+        self.assertEqual(len(response), 4096)
         self.check_range(response)
 
     def test_int_RGB_numpy_arrays(self):
@@ -662,7 +664,7 @@ class NumpyImagesRun(unittest.TestCase):
         response = image_features(test_image)
 
         self.assertTrue(isinstance(response, list))
-        self.assertEqual(len(response), 2048)
+        self.assertEqual(len(response), 4096)
         self.check_range(response)
 
     def test_int_RGBA_numpy_arrays(self):
@@ -670,7 +672,7 @@ class NumpyImagesRun(unittest.TestCase):
         response = image_features(test_image)
 
         self.assertTrue(isinstance(response, list))
-        self.assertEqual(len(response), 2048)
+        self.assertEqual(len(response), 4096)
         self.check_range(response)
 
     def test_invalid_int_numpy_arrays(self):
