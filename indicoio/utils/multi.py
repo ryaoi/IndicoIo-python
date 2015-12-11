@@ -1,4 +1,4 @@
-from indicoio.config import TEXT_APIS, IMAGE_APIS, API_NAMES
+from indicoio.config import TEXT_APIS, IMAGE_APIS, API_NAMES, MULTIAPI_NOT_SUPPORTED
 from indicoio.utils.api import api_handler
 from indicoio.utils.image import image_preprocess
 from indicoio.utils.errors import IndicoError
@@ -31,6 +31,8 @@ def intersections(data, apis = None, **kwargs):
     :rtype: Dictionary of api responses
     """
     # Client side api name checking
+    for api in apis:
+        assert api not in MULTIAPI_NOT_SUPPORTED
 
     # remove auto-inserted batch param
     kwargs.pop('batch', None)
@@ -70,12 +72,12 @@ def multi(data, datatype, apis, batch=False, **kwargs):
     :rtype: Dictionary of api responses
     """
     # Client side api name checking - strictly only accept func name api
-    available = AVAILABLE_APIS.get(datatype)
-    invalid_apis = [api for api in apis if api not in available]
+    available = list(set(AVAILABLE_APIS.get(datatype)) - set(MULTIAPI_NOT_SUPPORTED))
+    invalid_apis = [api for api in apis if api not in available or api in MULTIAPI_NOT_SUPPORTED]
     if invalid_apis:
         raise IndicoError(
-            "%s are not valid %s APIs. Please reference the available APIs below:\n%s"
-            % (", ".join(invalid_apis), datatype, ", ".join(available))
+            "The following are not valid %s APIs: %s. Please reference the available APIs below:\n%s"
+            % (datatype, ", ".join(invalid_apis),  ", ".join(available))
         )
 
     # Convert client api names to server names before sending request
@@ -102,7 +104,7 @@ def handle_response(result):
 
 
 @detect_batch_decorator
-def analyze_text(input_text, apis=TEXT_APIS, **kwargs):
+def analyze_text(input_text, apis=None, **kwargs):
     """
     Given input text, returns the results of specified text apis. Possible apis
     include: [ 'text_tags', 'political', 'sentiment', 'language' ]
@@ -122,7 +124,10 @@ def analyze_text(input_text, apis=TEXT_APIS, **kwargs):
     :type text: str or unicode
     :type apis: list of str
     :rtype: Dictionary of api responses
-    """
+    """ 
+
+    if not apis:
+        apis = list(set(TEXT_APIS) - set(MULTIAPI_NOT_SUPPORTED))
 
     cloud = kwargs.pop('cloud', None)
     batch = kwargs.pop('batch', False)
@@ -162,6 +167,9 @@ def analyze_image(image, apis=IMAGE_APIS, **kwargs):
     :type apis: list of str
     :rtype: Dictionary of api responses
     """
+
+    if not apis:
+        apis = list(set(TEXT_APIS) - set(MULTIAPI_NOT_SUPPORTED))
 
     cloud = kwargs.pop('cloud', None)
     batch = kwargs.pop('batch', False)
