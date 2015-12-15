@@ -162,10 +162,13 @@ class BatchAPIRun(unittest.TestCase):
 
     def test_relevance(self):
         test_data = ['president']
-        test_query = ['president']
+        test_query = ['president', "prime minister"]
         response = relevance(test_data, test_query)
         self.assertTrue(isinstance(response, list))
-        self.assertTrue(response[0] > 0.5)
+        self.assertTrue(response[0][0] > 0.5)
+        self.assertTrue(response[0][1] > 0.3)
+        self.assertEqual(len(response), 1)
+        self.assertEqual(len(response[0]), 2)
 
     def test_people(self):
         test_data = ['Barack Obama is scheduled to give a talk next Saturday at the White House.']
