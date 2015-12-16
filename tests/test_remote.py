@@ -161,31 +161,60 @@ class BatchAPIRun(unittest.TestCase):
         self.assertTrue(response[0]['English'] > 0.25)
 
     def test_relevance(self):
-        test_data = ['president']
+        test_data = 'president'
+        test_query = ['president', "prime minister"]
+        response = relevance(test_data, test_query)
+        self.assertTrue(isinstance(response, list))
+        self.assertTrue(response[0] > 0.5)
+        self.assertTrue(response[1] > 0.3)
+        self.assertEqual(len(response), 2)
+
+    def test_batch_relevance(self):
+        test_data = ['president', 'president']
         test_query = ['president', "prime minister"]
         response = relevance(test_data, test_query)
         self.assertTrue(isinstance(response, list))
         self.assertTrue(response[0][0] > 0.5)
         self.assertTrue(response[0][1] > 0.3)
-        self.assertEqual(len(response), 1)
+        self.assertEqual(len(response), 2)
         self.assertEqual(len(response[0]), 2)
+        self.assertEqual(len(response[1]), 2)
 
     def test_people(self):
-        test_data = ['Barack Obama is scheduled to give a talk next Saturday at the White House.']
+        test_data = 'Barack Obama is scheduled to give a talk next Saturday at the White House.'
+        response = people(test_data)
+        self.assertTrue(isinstance(response, list))
+        sorted_response = sorted(response, key=lambda x: x['confidence'], reverse=True)
+        self.assertTrue(sorted_response[0]['text'] == 'Barack Obama')
+
+        test_data = [test_data] * 2
         response = people(test_data)
         self.assertTrue(isinstance(response, list))
         sorted_response = [sorted(arr, key=lambda x: x['confidence'], reverse=True) for arr in response]
+        self.assertEqual(len(sorted_response), 2)
         self.assertTrue(sorted_response[0][0]['text'] == 'Barack Obama')
 
     def test_places(self):
-        test_data = ["Lets all go to Virginia Beach before it gets too cold to wander outside."]
+        test_data = "Lets all go to Virginia Beach before it gets too cold to wander outside."
+        response = places(test_data)
+        self.assertTrue(isinstance(response, list))
+        sorted_response = sorted(response, key=lambda x: x['confidence'], reverse=True)
+        self.assertTrue('Virginia' in sorted_response[0]['text'])
+
+        test_data = [test_data] * 2
         response = places(test_data)
         self.assertTrue(isinstance(response, list))
         sorted_response = [sorted(arr, key=lambda x: x['confidence'], reverse=True) for arr in response]
         self.assertTrue('Virginia' in sorted_response[0][0]['text'])
 
     def test_organizations(self):
-        test_data = ["A year ago, the New York Times published confidential comments about ISIS' ideology by Major General Michael K. Nagata, then U.S. Special Operations commander in the Middle East."]
+        test_data = "A year ago, the New York Times published confidential comments about ISIS' ideology by Major General Michael K. Nagata, then U.S. Special Operations commander in the Middle East."
+        response = organizations(test_data)
+        self.assertTrue(isinstance(response, list))
+        sorted_response = sorted(response, key=lambda x: x['confidence'], reverse=True)
+        self.assertTrue('ISIS' in sorted_response[0]['text'])
+
+        test_data = [test_data] * 2
         response = organizations(test_data)
         self.assertTrue(isinstance(response, list))
         sorted_response = [sorted(arr, key=lambda x: x['confidence'], reverse=True) for arr in response]

@@ -5,20 +5,21 @@ from indicoio.utils.decorators import detect_batch_decorator
 @detect_batch_decorator
 def relevance(data, queries, cloud=None, batch=False, api_key=None, version=None, **kwargs):
     """
-    Given input text, returns series of keywords and associated scores
+    Given input text and a list of query terms / phrases, returns how relevant the query is
+    to the input text.
 
     Example usage:
 
     .. code-block:: python
 
        >>> import indicoio
-       >>> import numpy as np
-       >>> text = 'Monday: Delightful with mostly sunny skies. Highs in the low 70s.'
-       >>> keywords = indicoio.keywords(text, top_n=3)
-       >>> print "The keywords are: "+str(keywords.keys())
-       u'The keywords are ['delightful', 'highs', 'skies']
+       >>> text = 'On Monday, president Barack Obama will be giving his keynote address at...'
+       >>> relevance = indicoio.relevance(text, queries=['president'])
+       >>> print "Relevance: " + str(relevance[0])
+       u'Relevance: [0.44755361996336784]'
 
     :param text: The text to be analyzed.
+    :param queries: a list of terms or phrases to measure similarity against
     :type text: str or unicode
     :rtype: Dictionary of feature score pairs
     """

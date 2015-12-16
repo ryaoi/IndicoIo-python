@@ -78,7 +78,8 @@ IMAGE_APIS = [
 ]
 
 MULTIAPI_NOT_SUPPORTED = [
-    'relevance'
+    'relevance',
+    'personas'
 ]
 
 OTHER_APIS = [
