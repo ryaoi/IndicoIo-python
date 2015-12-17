@@ -11,7 +11,7 @@ from six import PY3
 from indicoio import config
 from indicoio import political, sentiment, fer, facial_features, facial_localization, content_filtering, language, image_features, text_tags
 from indicoio import keywords, sentiment_hq, twitter_engagement, named_entities, intersections, analyze_image, analyze_text
-from indicoio import personas, personality
+from indicoio import personas, personality, relevance, people, places, organizations
 from indicoio.utils.errors import IndicoError
 
 DIR = os.path.dirname(os.path.realpath(__file__))
@@ -160,6 +160,66 @@ class BatchAPIRun(unittest.TestCase):
         self.assertTrue(isinstance(response, list))
         self.assertTrue(response[0]['English'] > 0.25)
 
+    def test_relevance(self):
+        test_data = 'president'
+        test_query = ['president', "prime minister"]
+        response = relevance(test_data, test_query)
+        self.assertTrue(isinstance(response, list))
+        self.assertTrue(response[0] > 0.5)
+        self.assertTrue(response[1] > 0.3)
+        self.assertEqual(len(response), 2)
+
+    def test_batch_relevance(self):
+        test_data = ['president', 'president']
+        test_query = ['president', "prime minister"]
+        response = relevance(test_data, test_query)
+        self.assertTrue(isinstance(response, list))
+        self.assertTrue(response[0][0] > 0.5)
+        self.assertTrue(response[0][1] > 0.3)
+        self.assertEqual(len(response), 2)
+        self.assertEqual(len(response[0]), 2)
+        self.assertEqual(len(response[1]), 2)
+
+    def test_people(self):
+        test_data = 'Barack Obama is scheduled to give a talk next Saturday at the White House.'
+        response = people(test_data)
+        self.assertTrue(isinstance(response, list))
+        sorted_response = sorted(response, key=lambda x: x['confidence'], reverse=True)
+        self.assertTrue(sorted_response[0]['text'] == 'Barack Obama')
+
+        test_data = [test_data] * 2
+        response = people(test_data)
+        self.assertTrue(isinstance(response, list))
+        sorted_response = [sorted(arr, key=lambda x: x['confidence'], reverse=True) for arr in response]
+        self.assertEqual(len(sorted_response), 2)
+        self.assertTrue(sorted_response[0][0]['text'] == 'Barack Obama')
+
+    def test_places(self):
+        test_data = "Lets all go to Virginia Beach before it gets too cold to wander outside."
+        response = places(test_data)
+        self.assertTrue(isinstance(response, list))
+        sorted_response = sorted(response, key=lambda x: x['confidence'], reverse=True)
+        self.assertTrue('Virginia' in sorted_response[0]['text'])
+
+        test_data = [test_data] * 2
+        response = places(test_data)
+        self.assertTrue(isinstance(response, list))
+        sorted_response = [sorted(arr, key=lambda x: x['confidence'], reverse=True) for arr in response]
+        self.assertTrue('Virginia' in sorted_response[0][0]['text'])
+
+    def test_organizations(self):
+        test_data = "A year ago, the New York Times published confidential comments about ISIS' ideology by Major General Michael K. Nagata, then U.S. Special Operations commander in the Middle East."
+        response = organizations(test_data)
+        self.assertTrue(isinstance(response, list))
+        sorted_response = sorted(response, key=lambda x: x['confidence'], reverse=True)
+        self.assertTrue('ISIS' in sorted_response[0]['text'])
+
+        test_data = [test_data] * 2
+        response = organizations(test_data)
+        self.assertTrue(isinstance(response, list))
+        sorted_response = [sorted(arr, key=lambda x: x['confidence'], reverse=True) for arr in response]
+        self.assertTrue('ISIS' in sorted_response[0][0]['text'])
+
     def test_batch_named_entities(self):
         batch = ["London Underground's boss Mike Brown warned that the strike ..."]
         expected_entities = ("London Underground", "Mike Brown")
@@ -180,17 +240,17 @@ class BatchAPIRun(unittest.TestCase):
 
     def test_batch_multi_api_text(self):
         test_data = ['clearly an english sentence']
-        response = analyze_text(test_data, apis=config.TEXT_APIS, api_key=self.api_key)
+        response = analyze_text(test_data,  api_key=self.api_key)
 
         self.assertTrue(isinstance(response, dict))
-        self.assertTrue(set(response.keys()) == set(config.TEXT_APIS))
+        self.assertTrue(set(response.keys()) <= set(config.TEXT_APIS))
 
     def test_default_multi_api_text(self):
         test_data = ['clearly an english sentence']
         response = analyze_text(test_data, api_key=self.api_key)
 
         self.assertTrue(isinstance(response, dict))
-        self.assertTrue(set(response.keys()) == set(config.TEXT_APIS))
+        self.assertTrue(set(response.keys()) <= set(config.TEXT_APIS))
 
     def test_multi_api_bad_api(self):
         self.assertRaises(IndicoError,
@@ -485,10 +545,10 @@ class FullAPIRun(unittest.TestCase):
 
     def test_multi_api_text(self):
         test_data = 'clearly an english sentence'
-        response = analyze_text(test_data, apis=config.TEXT_APIS, api_key=self.api_key)
+        response = analyze_text(test_data, api_key=self.api_key)
 
         self.assertTrue(isinstance(response, dict))
-        self.assertTrue(set(response.keys()) == set(config.TEXT_APIS))
+        self.assertTrue(set(response.keys()) <= set(config.TEXT_APIS))
 
     def test_intersections_not_enough_data(self):
         test_data = ['test_Data']
