@@ -1,7 +1,7 @@
 from functools import wraps, partial
 import warnings
 
-Version, version, __version__, VERSION = ('0.11.0',) * 4
+Version, version, __version__, VERSION = ('0.11.2',) * 4
 
 JSON_HEADERS = {
     'Content-type': 'application/json',
@@ -16,9 +16,10 @@ from indicoio.text.sentiment import posneg as sentiment
 from indicoio.text.lang import language
 from indicoio.text.tagging import text_tags
 from indicoio.text.keywords import keywords
-from indicoio.text.ner import named_entities
+from indicoio.text.ner import named_entities, people, places, organizations
 from indicoio.text.personality import personality
 from indicoio.text.personas import personas
+from indicoio.text.relevance import relevance
 from indicoio.images.fer import fer
 from indicoio.images.features import facial_features, image_features
 from indicoio.images.faciallocalization import facial_localization

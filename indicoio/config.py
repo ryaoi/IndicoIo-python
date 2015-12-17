@@ -62,6 +62,10 @@ TEXT_APIS = [
     'named_entities',
     'twitter_engagement',
     'personality',
+    'relevance',
+    'people',
+    'places',
+    'organizations'
 ]
 
 IMAGE_APIS = [
@@ -71,6 +75,11 @@ IMAGE_APIS = [
     'image_recognition',
     'content_filtering',
     'facial_localization'
+]
+
+MULTIAPI_NOT_SUPPORTED = [
+    'relevance',
+    'personas'
 ]
 
 OTHER_APIS = [
