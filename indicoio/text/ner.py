@@ -46,9 +46,10 @@ def people(text, cloud=None, batch=None, api_key=None, version=None, **kwargs):
         [
           {
             u'text': "Mike Brown",
-            u'confidence': 0.913224,
-            u'position': ()
-          }
+            u'confidence': 0.09470917284488678,
+            u'position': [26, 36]
+          },
+          ...
         ]
 
     :param text: The text to be analyzed.
@@ -69,13 +70,14 @@ def places(text, cloud=None, batch=None, api_key=None, version=None, **kwargs):
     .. code-block:: python
 
        >>> text = "London Underground's boss Mike Brown warned that the strike ..."
-       >>> entities = indicoio.people(text)
+       >>> entities = indicoio.places(text)
         [
           {
             u'text': "London",
-            u'confidence': 0.913224,
-            u'position': ()
-          }
+            u'confidence': 0.18549786508083344,
+            u'position': [0, 6]
+          },
+          ...
         ]
 
     :param text: The text to be analyzed.
@@ -97,12 +99,12 @@ def organizations(text, cloud=None, batch=None, api_key=None, version=None, **kw
     .. code-block:: python
 
        >>> text = "London Underground's boss Mike Brown warned that the strike ..."
-       >>> entities = indicoio.people(text)
+       >>> entities = indicoio.organizations(text)
         [
           {
             u'text': "London Underground",
-            u'confidence': 0.913224,
-            u'position': ()
+            u'confidence': 0.8643872141838074,
+            u'position': [0, 18]
           }
         ]
 
