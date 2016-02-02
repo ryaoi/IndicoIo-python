@@ -30,7 +30,7 @@ def api_handler(arg, cloud, api, url_params=None, **kwargs):
         url_protocol = config.url_protocol
 
     url = create_url(url_protocol, host, api, dict(kwargs, **url_params))
-    response = requests.post(url, data=json_data, headers=JSON_HEADERS, verify=False)
+    response = requests.post(url, data=json_data, headers=JSON_HEADERS)
 
     warning = response.headers.get('x-warning')
     if warning:
