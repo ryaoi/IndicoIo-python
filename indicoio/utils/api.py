@@ -23,10 +23,14 @@ def api_handler(arg, cloud, api, url_params=None, **kwargs):
     data.update(**kwargs)
     json_data = json.dumps(data)
     cloud = cloud or config.cloud
-    host = "%s.indico.domains" % cloud if cloud else config.PUBLIC_API_HOST
+    host = "%s.indico.domains" % cloud if cloud else config.host
+    if not (host.endswith('indico.domains') or host.endswith('indico.io')):
+        url_protocol = "http"
+    else:
+        url_protocol = config.url_protocol
 
-    url = create_url(host, api, dict(kwargs, **url_params))
-    response = requests.post(url, data=json_data, headers=JSON_HEADERS, verify=False)
+    url = create_url(url_protocol, host, api, dict(kwargs, **url_params))
+    response = requests.post(url, data=json_data, headers=JSON_HEADERS)
 
     warning = response.headers.get('x-warning')
     if warning:
@@ -43,14 +47,14 @@ def api_handler(arg, cloud, api, url_params=None, **kwargs):
     return results
 
 
-def create_url(host, api, url_params):
+def create_url(url_protocol, host, api, url_params):
     api_key = url_params.get("api_key") or config.api_key
     is_batch = url_params.get("batch")
     apis = url_params.get("apis")
     version = url_params.get("version") or url_params.get("v")
     method = url_params.get('method')
 
-    host_url_seg = config.url_protocol + "//%s" % host
+    host_url_seg = url_protocol + "://%s" % host
     api_url_seg = "/%s" % api
     batch_url_seg = "/batch" if is_batch else ""
     method_url_seg = "/%s" % method if method else ""
