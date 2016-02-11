@@ -63,6 +63,6 @@ def image_features(image, cloud=None, batch=False, api_key=None, version=3, **kw
     :type image: numpy.ndarray
     :rtype: List containing features
     """
-    image = image_preprocess(image, batch=batch, size=144, min_axis=True)
+    image = image_preprocess(image, batch=batch, size=512, min_axis=True)
     url_params = {"batch": batch, "api_key": api_key, "version": version}
     return api_handler(image, cloud=cloud, api="imagefeatures", url_params=url_params, **kwargs)
