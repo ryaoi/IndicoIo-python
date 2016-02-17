@@ -9,6 +9,7 @@ class Collection(object):
 
     def __init__(self, collection, *args, **kwargs):
         self.collection = collection
+        self.domain = kwargs.get("domain")
 
     def add_data(self, data, cloud=None, batch=False, api_key=None, version=None, **kwargs):
         """
@@ -51,6 +52,8 @@ class Collection(object):
             data[0] = image_preprocess(data[0], batch=batch)
 
         kwargs['collection'] = self.collection
+        if self.domain:
+            kwargs["domain"] = self.domain
         url_params = {"batch": batch, "api_key": api_key, "version": version, 'method': "add_data"}
         return api_handler(data, cloud=cloud, api="custom", url_params=url_params, **kwargs)
 
@@ -110,6 +113,8 @@ class Collection(object):
           .75
         """
         batch = detect_batch(data)
+        if self.domain:
+            kwargs["domain"] = self.domain
         kwargs['collection'] = self.collection
         data = image_preprocess(data, batch=batch)
         url_params = {"batch": batch, "api_key": api_key, "version": version}
