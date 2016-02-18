@@ -3,6 +3,7 @@ import time
 from indicoio.utils.api import api_handler
 from indicoio.utils.decorators import detect_batch
 from indicoio.utils.image import image_preprocess
+from indicoio.utils.errors import IndicoError
 
 
 class Collection(object):
@@ -183,7 +184,12 @@ class Collection(object):
         """
         Block until the collection's model is completed training
         """
-        while self.info().get('status') != "ready":
+        while True:
+            status = self.info().get('status')
+            if status == "ready":
+                break
+            if status != "training":
+                raise IndicoError("Collection status failed with: {0}".format(status))
             time.sleep(interval)
 
     def info(self):
