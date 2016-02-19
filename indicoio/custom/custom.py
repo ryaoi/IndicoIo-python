@@ -3,12 +3,14 @@ import time
 from indicoio.utils.api import api_handler
 from indicoio.utils.decorators import detect_batch
 from indicoio.utils.image import image_preprocess
+from indicoio.utils.errors import IndicoError
 
 
 class Collection(object):
 
     def __init__(self, collection, *args, **kwargs):
         self.collection = collection
+        self.domain = kwargs.get("domain")
 
     def add_data(self, data, cloud=None, batch=False, api_key=None, version=None, **kwargs):
         """
@@ -51,6 +53,8 @@ class Collection(object):
             data[0] = image_preprocess(data[0], batch=batch)
 
         kwargs['collection'] = self.collection
+        if self.domain:
+            kwargs["domain"] = self.domain
         url_params = {"batch": batch, "api_key": api_key, "version": version, 'method': "add_data"}
         return api_handler(data, cloud=cloud, api="custom", url_params=url_params, **kwargs)
 
@@ -110,6 +114,8 @@ class Collection(object):
           .75
         """
         batch = detect_batch(data)
+        if self.domain:
+            kwargs["domain"] = self.domain
         kwargs['collection'] = self.collection
         data = image_preprocess(data, batch=batch)
         url_params = {"batch": batch, "api_key": api_key, "version": version}
@@ -178,7 +184,12 @@ class Collection(object):
         """
         Block until the collection's model is completed training
         """
-        while self.info().get('status') != "ready":
+        while True:
+            status = self.info().get('status')
+            if status == "ready":
+                break
+            if status != "training":
+                raise IndicoError("Collection status failed with: {0}".format(status))
             time.sleep(interval)
 
     def info(self):
