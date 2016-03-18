@@ -12,6 +12,7 @@ from indicoio import config
 from indicoio import political, sentiment, fer, facial_features, facial_localization, content_filtering, language, image_features, text_tags
 from indicoio import keywords, sentiment_hq, twitter_engagement, named_entities, intersections, analyze_image, analyze_text
 from indicoio import personas, personality, relevance, people, places, organizations, text_features
+from indicoio import emotion
 from indicoio.utils.errors import IndicoError
 
 DIR = os.path.dirname(os.path.realpath(__file__))
@@ -81,6 +82,13 @@ class BatchAPIRun(unittest.TestCase):
         test_data = ["Guns don't kill people, people kill people."]
         response = political(test_data, api_key=self.api_key)
         self.assertTrue(isinstance(response, list))
+
+    def test_batch_emotion(self):
+        test_data = ["I did it. I got into Grad School. Not just any program, but a GREAT program. :-)"]
+        response = emotion(test_data, api_key=self.api_key)
+        self.assertTrue(isinstance(response, list))
+        self.assertTrue(isinstance(response[0], dict))
+        self.assertIn('joy', response[0].keys())
 
     def test_url_support(self):
         test_url = "https://s3-us-west-2.amazonaws.com/indico-test-data/face.jpg"
@@ -437,7 +445,13 @@ class FullAPIRun(unittest.TestCase):
 
         self.assertTrue(isinstance(response, dict))
         self.assertIsInstance(response["commander"], float)
-        self.assertTrue(len(response.keys()))
+
+    def test_emotion(self):
+        data = "I did it. I got into Grad School. Not just any program, but a GREAT program. :-)"
+        response = emotion(data)
+
+        self.assertTrue(isinstance(response, dict))
+        self.assertIsInstance(response["joy"], float)
 
     def test_good_fer(self):
         fer_set = set(['Angry', 'Sad', 'Neutral', 'Surprise', 'Fear', 'Happy'])
