@@ -31,25 +31,25 @@ class BatchAPIRun(unittest.TestCase):
 
     def test_batch_texttags(self):
         test_data = ["On Monday, president Barack Obama will be..."]
-        response = text_tags(test_data, api_key=self.api_key)
+        response = text_tags(test_data)
         self.assertTrue(isinstance(response, list))
 
     def test_batch_keywords(self):
         test_data = ["A working api is key to the success of our young company"]
         words = [set(text.lower().split()) for text in test_data]
-        response = keywords(test_data, api_key=self.api_key)
+        response = keywords(test_data)
         self.assertTrue(isinstance(response, list))
         self.assertTrue(set(response[0].keys()).issubset(words[0]))
 
     def test_batch_posneg(self):
         test_data = ['Worst song ever', 'Best song ever']
-        response = sentiment(test_data, api_key=self.api_key)
+        response = sentiment(test_data)
         self.assertTrue(isinstance(response, list))
         self.assertTrue(response[0] < 0.5)
 
     def test_batch_sentiment_hq(self):
         test_data = ['Worst song ever', 'Best song ever']
-        response = sentiment_hq(test_data, api_key=self.api_key)
+        response = sentiment_hq(test_data)
         self.assertTrue(isinstance(response, list))
         self.assertTrue(response[0] < 0.5)
 
@@ -80,91 +80,91 @@ class BatchAPIRun(unittest.TestCase):
 
     def test_batch_political(self):
         test_data = ["Guns don't kill people, people kill people."]
-        response = political(test_data, api_key=self.api_key)
+        response = political(test_data)
         self.assertTrue(isinstance(response, list))
 
     def test_batch_emotion(self):
         test_data = ["I did it. I got into Grad School. Not just any program, but a GREAT program. :-)"]
-        response = emotion(test_data, api_key=self.api_key)
+        response = emotion(test_data)
         self.assertTrue(isinstance(response, list))
         self.assertTrue(isinstance(response[0], dict))
         self.assertIn('joy', response[0].keys())
 
     def test_url_support(self):
         test_url = "https://s3-us-west-2.amazonaws.com/indico-test-data/face.jpg"
-        response = fer(test_url, api_key=self.api_key)
+        response = fer(test_url)
         self.assertTrue(isinstance(response, dict))
         self.assertEqual(len(response.keys()), 6)
 
     def test_batch_fer(self):
         test_data = [os.path.normpath(os.path.join(DIR, "data/48by48.png"))]
-        response = fer(test_data, api_key=self.api_key)
+        response = fer(test_data)
         self.assertTrue(isinstance(response, list))
         self.assertTrue(isinstance(response[0], dict))
 
     def test_batch_content_filtering(self):
         test_data = [os.path.normpath(os.path.join(DIR, "data/48by48.png"))]
-        response = content_filtering(test_data, api_key=self.api_key)
+        response = content_filtering(test_data)
         self.assertTrue(isinstance(response, list))
         self.assertTrue(isinstance(response[0], float))
 
     def test_batch_fer_bad_b64(self):
         test_data = ["$bad#FI jeaf9(#0"]
-        self.assertRaises(IndicoError, fer, test_data, api_key=self.api_key)
+        self.assertRaises(IndicoError, fer, test_data)
 
     def test_batch_fer_good_b64(self):
         test_data = ["iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAg5JREFUeNrEV4uNgzAMpegGyAgZgQ3KBscIjMAGx03QEdqbgG5AOwG3AWwAnSCXqLZkuUkwhfYsvaLm5xc7sZ1dIhdtUVjsLZRFTvp+LSaLq8UZ/s+KMSbZCcY5RV9E4QQKHG7QtgeCGv4PFt8WpzkCcztu3TiL0eJgkQmsVFn0MK+LzYkRKEGpG1GDyZdKRdaolhAoJewXnJsO1jtKCFDlChZAFxyJj2PnBRU20KZg7oMlOAENijpi8hwmGkKkZW2GzONtVLA/DxHAhTO2I7MCVBSQ6nGDlEBJDhyVYiUBHXBxzQm0wE4FzPYsGs856dA9SAAP2oENzFYqR6iAFQpHIAUzO/nxnOgthF/lM3w/3U8KYXTwxG/1IgIulF+wPQUXDMl75UoJZIHstRWpaGb8IGYqwBoKlG/lgpzoUEBoj50p8QtVrmHgaaXyC/H3BFC+e9kGFlCB0CtBF7FifQ8D9zjQQHj0pdOM3F1pUBoFKdxtqkMClScHJCSDlSxhHSNRT5K+FaZnHglrz+AGoxZLKNLYH6s3CkkuyJlp58wviZ4PuSCWDXl5hmjZtxcSCGbDUD3gK7EMOZBLCETrgVBF5K0lI5bIZ0wfrYh8NWHIAiNTPHpuTOKpCes1VTFaiNaFdGwPfdmaqlj6LmjJbgoSSfUW74K3voz+/W0oIeB7HWu2s+dfx3N+eLX8CTAAwUmKjK/dHS4AAAAASUVORK5CYII="]
-        response = fer(test_data, api_key=self.api_key)
+        response = fer(test_data)
         self.assertTrue(isinstance(response, list))
         self.assertTrue(isinstance(response[0], dict))
 
     def test_batch_fer_filepath(self):
         test_data = [os.path.normpath(os.path.join(DIR, "data/fear.png"))]
-        response = fer(test_data, api_key=self.api_key)
+        response = fer(test_data)
         self.assertTrue(isinstance(response, list))
         self.assertTrue(isinstance(response[0], dict))
 
     def test_fer_detect(self):
         test_data = os.path.normpath(os.path.join(DIR, "data/fear.png"))
-        response = fer(test_data, api_key=self.api_key, detect=True)
+        response = fer(test_data, detect=True)
         self.assertIsInstance(response, list)
         self.assertEqual(len(response), 1)
         self.assertIn("location", response[0])
 
     def test_batch_fer_pil_image(self):
         test_data = [Image.open(os.path.normpath(os.path.join(DIR, "data/fear.png")))]
-        response = fer(test_data, api_key=self.api_key)
+        response = fer(test_data)
         self.assertTrue(isinstance(response, list))
         self.assertTrue(isinstance(response[0], dict))
 
     def test_batch_fer_nonexistant_filepath(self):
         test_data = ["data/unhappy.png"]
-        self.assertRaises(IndicoError, fer, test_data, api_key=self.api_key)
+        self.assertRaises(IndicoError, fer, test_data)
 
     def test_batch_facial_features(self):
         test_data = [os.path.normpath(os.path.join(DIR, "data/48by48.png"))]
-        response = facial_features(test_data, api_key=self.api_key)
+        response = facial_features(test_data)
         self.assertTrue(isinstance(response, list))
         self.assertTrue(isinstance(response[0], list))
         self.assertEqual(len(response[0]), 48)
 
     def test_batch_image_features_greyscale(self):
         test_data = [os.path.normpath(os.path.join(DIR, "data/48by48.png"))]
-        response = image_features(test_data, api_key=self.api_key)
+        response = image_features(test_data)
         self.assertTrue(isinstance(response, list))
         self.assertTrue(isinstance(response[0], list))
         self.assertEqual(len(response[0]), 4096)
 
     def test_batch_image_features_rgb(self):
         test_data = [os.path.normpath(os.path.join(DIR, "data/48by48rgb.png"))]
-        response = image_features(test_data, api_key=self.api_key)
+        response = image_features(test_data)
         self.assertTrue(isinstance(response, list))
         self.assertTrue(isinstance(response[0], list))
         self.assertEqual(len(response[0]), 4096)
 
     def test_batch_language(self):
         test_data = ['clearly an english sentence']
-        response = language(test_data, api_key=self.api_key)
+        response = language(test_data)
         self.assertTrue(isinstance(response, list))
         self.assertTrue(response[0]['English'] > 0.25)
 
@@ -254,7 +254,7 @@ class BatchAPIRun(unittest.TestCase):
     def test_batch_multi_api_image(self):
         test_data = [os.path.normpath(os.path.join(DIR, "data/48by48.png")),
                      os.path.normpath(os.path.join(DIR, "data/48by48.png"))]
-        response = analyze_image(test_data, apis=config.IMAGE_APIS, api_key=self.api_key)
+        response = analyze_image(test_data, apis=config.IMAGE_APIS)
 
         self.assertTrue(isinstance(response, dict))
         self.assertTrue(set(response.keys()) == set(config.IMAGE_APIS))
@@ -262,14 +262,14 @@ class BatchAPIRun(unittest.TestCase):
 
     def test_batch_multi_api_text(self):
         test_data = ['clearly an english sentence']
-        response = analyze_text(test_data,  api_key=self.api_key)
+        response = analyze_text(test_data)
 
         self.assertTrue(isinstance(response, dict))
         self.assertTrue(set(response.keys()) <= set(config.TEXT_APIS))
 
     def test_default_multi_api_text(self):
         test_data = ['clearly an english sentence']
-        response = analyze_text(test_data, api_key=self.api_key)
+        response = analyze_text(test_data)
 
         self.assertTrue(isinstance(response, dict))
         self.assertTrue(set(response.keys()) <= set(config.TEXT_APIS))
@@ -566,14 +566,14 @@ class FullAPIRun(unittest.TestCase):
 
     def test_multi_api_image(self):
         test_data = os.path.normpath(os.path.join(DIR, "data/48by48.png"))
-        response = analyze_image(test_data, apis=config.IMAGE_APIS, api_key=self.api_key)
+        response = analyze_image(test_data, apis=config.IMAGE_APIS)
 
         self.assertTrue(isinstance(response, dict))
         self.assertTrue(set(response.keys()) == set(config.IMAGE_APIS))
 
     def test_multi_api_text(self):
         test_data = 'clearly an english sentence'
-        response = analyze_text(test_data, api_key=self.api_key)
+        response = analyze_text(test_data)
 
         self.assertTrue(isinstance(response, dict))
         self.assertTrue(set(response.keys()) <= set(config.TEXT_APIS))
