@@ -24,13 +24,17 @@ def api_handler(arg, cloud, api, url_params=None, **kwargs):
     json_data = json.dumps(data)
     cloud = cloud or config.cloud
     host = "%s.indico.domains" % cloud if cloud else config.host
+
+    # LOCAL DEPLOYMENTS
     if not (host.endswith('indico.domains') or host.endswith('indico.io')):
         url_protocol = "http"
     else:
         url_protocol = config.url_protocol
 
+    headers = dict(JSON_HEADERS)
+    headers["X-ApiKey"] = url_params.get("api_key") or config.api_key
     url = create_url(url_protocol, host, api, dict(kwargs, **url_params))
-    response = requests.post(url, data=json_data, headers=JSON_HEADERS)
+    response = requests.post(url, data=json_data, headers=headers)
 
     warning = response.headers.get('x-warning')
     if warning:
@@ -48,7 +52,6 @@ def api_handler(arg, cloud, api, url_params=None, **kwargs):
 
 
 def create_url(url_protocol, host, api, url_params):
-    api_key = url_params.get("api_key") or config.api_key
     is_batch = url_params.get("batch")
     apis = url_params.get("apis")
     version = url_params.get("version") or url_params.get("v")
@@ -58,11 +61,10 @@ def create_url(url_protocol, host, api, url_params):
     api_url_seg = "/%s" % api
     batch_url_seg = "/batch" if is_batch else ""
     method_url_seg = "/%s" % method if method else ""
-    key_url_seg = "?key=%s" % api_key
-    multi_url_seg = "&apis=%s" % ",".join(apis) if apis else ""
+    multi_url_seg = "?apis=%s" % ",".join(apis) if apis else "?"
     version_seg = ("&version=%s" % str(version)) if version else ""
 
     return (
         host_url_seg + api_url_seg + batch_url_seg + method_url_seg +
-        key_url_seg + multi_url_seg + version_seg
+        multi_url_seg + version_seg
     )
