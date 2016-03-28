@@ -24,9 +24,7 @@ def api_handler(arg, cloud, api, url_params=None, **kwargs):
         arg = arg.decode('utf-8')
     if type(arg) == list:
         arg = [a.decode('utf-8') if type(arg) == bytes else a for a in arg]
-    data = {'data': arg}
-    data.update(**kwargs)
-    json_data = json.dumps(data)
+   
     cloud = cloud or config.cloud
     host = "%s.indico.domains" % cloud if cloud else config.host
 
@@ -39,6 +37,11 @@ def api_handler(arg, cloud, api, url_params=None, **kwargs):
     headers = dict(JSON_HEADERS)
     headers["X-ApiKey"] = url_params.get("api_key") or config.api_key
     url = create_url(url_protocol, host, api, dict(kwargs, **url_params))
+
+    data = {'data': arg}
+    data.update(**kwargs)
+    json_data = json.dumps(data)
+
     response = requests.post(url, data=json_data, headers=headers)
 
     warning = response.headers.get('x-warning')
@@ -57,10 +60,10 @@ def api_handler(arg, cloud, api, url_params=None, **kwargs):
 
 
 def create_url(url_protocol, host, api, url_params):
-    is_batch = url_params.get("batch")
-    apis = url_params.get("apis")
-    version = url_params.get("version") or url_params.get("v")
-    method = url_params.get('method')
+    is_batch = url_params.pop("batch", None)
+    apis = url_params.pop("apis", None)
+    version = url_params.pop("version", None) or url_params.pop("v", None)
+    method = url_params.pop('method', None)
 
     host_url_seg = url_protocol + "://%s" % host
     api_url_seg = "/%s" % api
