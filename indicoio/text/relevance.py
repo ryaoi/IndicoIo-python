@@ -25,4 +25,5 @@ def relevance(data, queries, cloud=None, batch=False, api_key=None, version=None
     """
     url_params = {"batch": batch, "api_key": api_key, "version": version}
     kwargs['queries'] = queries
+    kwargs['synonyms'] = False
     return api_handler(data, cloud=cloud, api="relevance", url_params=url_params, **kwargs)
