@@ -48,3 +48,4 @@ v0.13.1 Thu Feb 11 -- Client side resize to 512 min axis for imagefeatures
 v0.13.2 Fri Feb 19 -- Custom API UX tweaking
 v0.14.0 Tue Mar 22 -- Add emotion API
 v0.15.0 Mon Mar 28 -- Pass api key via header, remove irrelevant kwargs from JSON body
+v0.15.1 Thu Mar 31 -- Change default settings for relevance and text features APIs
