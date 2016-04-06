@@ -10,7 +10,7 @@ from six import PY3
 
 from indicoio import config
 from indicoio import political, sentiment, fer, facial_features, facial_localization, content_filtering, language, image_features, text_tags
-from indicoio import keywords, sentiment_hq, twitter_engagement, named_entities, intersections, analyze_image, analyze_text
+from indicoio import keywords, sentiment_hq, twitter_engagement, intersections, analyze_image, analyze_text
 from indicoio import personas, personality, relevance, people, places, organizations, text_features
 from indicoio import emotion
 from indicoio.utils.errors import IndicoError
@@ -242,15 +242,6 @@ class BatchAPIRun(unittest.TestCase):
         sorted_response = [sorted(arr, key=lambda x: x['confidence'], reverse=True) for arr in response]
         self.assertTrue('ISIS' in sorted_response[0][0]['text'])
 
-    def test_batch_named_entities(self):
-        batch = ["London Underground's boss Mike Brown warned that the strike ..."]
-        expected_entities = ("London Underground", "Mike Brown")
-        expected_keys = set(["categories", "confidence"])
-        entities = named_entities(batch)[0]
-        for entity in expected_entities:
-            assert entity in expected_entities
-            assert not (set(entities[entity]) - expected_keys)
-
     def test_batch_multi_api_image(self):
         test_data = [os.path.normpath(os.path.join(DIR, "data/48by48.png")),
                      os.path.normpath(os.path.join(DIR, "data/48by48.png"))]
@@ -373,15 +364,6 @@ class FullAPIRun(unittest.TestCase):
         results = keywords(text, threshold=.1)
         for v in results.values():
             assert v >= .1
-
-    def test_named_entities(self):
-        text = "London Underground's boss Mike Brown warned that the strike ..."
-        expected_entities = ("London Underground", "Mike Brown")
-        expected_keys = set(["categories", "confidence"])
-        entities = named_entities(text)
-        for entity in expected_entities:
-            assert entity in expected_entities
-            assert not (set(entities[entity]) - expected_keys)
 
     def test_political(self):
         political_set = set(['Libertarian', 'Liberal', 'Conservative', 'Green'])

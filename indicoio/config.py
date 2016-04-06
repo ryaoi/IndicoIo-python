@@ -59,7 +59,6 @@ TEXT_APIS = [
     'language',
     'sentiment_hq',
     'keywords',
-    'named_entities',
     'twitter_engagement',
     'personality',
     'relevance',
