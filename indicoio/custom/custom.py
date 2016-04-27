@@ -149,6 +149,16 @@ class Collection(object):
         url_params = {"batch": False, "api_key": api_key, "version": version, "method": "clear_collection"}
         return api_handler(None, cloud=cloud, api="custom", url_params=url_params, private=True, **kwargs)
 
+
+    def info(self, cloud=None, api_key=None, version=None, **kwargs):
+        """
+        Return the current state of the model associated with a given collection
+        """
+        kwargs['collection'] = self.collection
+        url_params = {"batch": False, "api_key": api_key, "version": version, "method": "info"}
+        return api_handler(None, cloud=cloud, api="custom", url_params=url_params, private=True, **kwargs)
+
+
     def remove_example(self, data, cloud=None, batch=False, api_key=None, version=None, **kwargs):
         """
         This is an API made to remove a single instance of training data. This is useful in cases where a
@@ -191,12 +201,6 @@ class Collection(object):
             if status != "training":
                 raise IndicoError("Collection status failed with: {0}".format(status))
             time.sleep(interval)
-
-    def info(self):
-        """
-        Return the current state of the model associated with a given collection
-        """
-        return collections().get(self.collection)
 
 
 def collections(cloud=None, api_key=None, version=None, **kwargs):
