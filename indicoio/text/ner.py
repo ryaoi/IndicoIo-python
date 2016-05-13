@@ -2,6 +2,11 @@ from indicoio.utils.api import api_handler
 from indicoio.utils.decorators import detect_batch_decorator
 
 @detect_batch_decorator
+def named_entities(text, cloud=None, batch=None, api_key=None, version=2, **kwargs):
+    url_params = {"batch": batch, "api_key": api_key, "version": version}
+    return api_handler(text, cloud=cloud, api="namedentities", url_params=url_params, **kwargs)
+
+@detect_batch_decorator
 def people(text, cloud=None, batch=None, api_key=None, version=None, **kwargs):
     """
     Given input text, returns references to specific persons found in the text

@@ -24,7 +24,7 @@ def api_handler(arg, cloud, api, url_params=None, **kwargs):
         arg = arg.decode('utf-8')
     if type(arg) == list:
         arg = [a.decode('utf-8') if type(arg) == bytes else a for a in arg]
-   
+
     cloud = cloud or config.cloud
     host = "%s.indico.domains" % cloud if cloud else config.host
 
