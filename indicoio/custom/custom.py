@@ -44,12 +44,14 @@ class Collection(object):
            >>> text = "London Underground's boss Mike Brown warned that the strike ..."
            >>> indicoio.add_data([[text, .5]])
         """
-        batch = isinstance(data[0], list)
+        batch = isinstance(data[0], (list, tuple))
         if batch:
+            data = map(list, data)
             X, Y = zip(*data)
             X = image_preprocess(X, batch=batch)
             data = map(list, zip(X, Y))
         else:
+            data = list(data)
             data[0] = image_preprocess(data[0], batch=batch)
 
         kwargs['collection'] = self.collection
