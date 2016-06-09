@@ -50,3 +50,4 @@ v0.14.0 Tue Mar 22 -- Add emotion API
 v0.15.0 Mon Mar 28 -- Pass api key via header, remove irrelevant kwargs from JSON body
 v0.15.1 Thu Mar 31 -- Change default settings for relevance and text features APIs
 v0.15.3 Wed Apr 27 -- More efficient status endpoint for custom collections
+v0.15.4 Thu June 9 -- Convert tuples to lists in input to custom collections API
