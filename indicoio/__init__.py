@@ -11,8 +11,9 @@ JSON_HEADERS = {
 }
 
 from indicoio.text.twitter_engagement import twitter_engagement
-from indicoio.text.sentiment import political, posneg, sentiment_hq
+from indicoio.text.sentiment import posneg, sentiment_hq
 from indicoio.text.sentiment import posneg as sentiment
+from indicoio.text.political import political
 from indicoio.text.lang import language
 from indicoio.text.tagging import text_tags
 from indicoio.text.keywords import keywords
