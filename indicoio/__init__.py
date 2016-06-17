@@ -1,7 +1,7 @@
 from functools import wraps, partial
 import warnings
 
-Version, version, __version__, VERSION = ('0.15.3',) * 4
+Version, version, __version__, VERSION = ('0.15.5',) * 4
 
 JSON_HEADERS = {
     'Content-type': 'application/json',
@@ -11,8 +11,9 @@ JSON_HEADERS = {
 }
 
 from indicoio.text.twitter_engagement import twitter_engagement
-from indicoio.text.sentiment import political, posneg, sentiment_hq
+from indicoio.text.sentiment import posneg, sentiment_hq
 from indicoio.text.sentiment import posneg as sentiment
+from indicoio.text.political import political
 from indicoio.text.lang import language
 from indicoio.text.tagging import text_tags
 from indicoio.text.keywords import keywords

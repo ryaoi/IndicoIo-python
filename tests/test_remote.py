@@ -78,11 +78,6 @@ class BatchAPIRun(unittest.TestCase):
         self.assertIsInstance(response[0]["commander"], float)
         self.assertEqual(response[0]["commander"], response[1]["commander"])
 
-    def test_batch_political(self):
-        test_data = ["Guns don't kill people, people kill people."]
-        response = political(test_data)
-        self.assertTrue(isinstance(response, list))
-
     def test_batch_emotion(self):
         test_data = ["I did it. I got into Grad School. Not just any program, but a GREAT program. :-)"]
         response = emotion(test_data)
@@ -364,20 +359,6 @@ class FullAPIRun(unittest.TestCase):
         results = keywords(text, threshold=.1)
         for v in results.values():
             assert v >= .1
-
-    def test_political(self):
-        political_set = set(['Libertarian', 'Liberal', 'Conservative', 'Green'])
-        test_string = "Guns don't kill people, people kill people."
-        response = political(test_string)
-
-        self.assertTrue(isinstance(response, dict))
-        self.assertEqual(political_set, set(response.keys()))
-
-        test_string = "pro-choice"
-        response = political(test_string)
-
-        self.assertTrue(isinstance(response, dict))
-        assert response['Libertarian'] > 0.25
 
     def test_posneg(self):
         test_string = "Worst song ever."
