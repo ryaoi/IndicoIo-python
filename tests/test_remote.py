@@ -11,7 +11,7 @@ from six import PY3
 from indicoio import config
 from indicoio import political, sentiment, fer, facial_features, facial_localization, content_filtering, language, image_features, text_tags
 from indicoio import keywords, sentiment_hq, twitter_engagement, intersections, analyze_image, analyze_text
-from indicoio import personas, personality, relevance, people, places, organizations, text_features
+from indicoio import personas, personality, relevance, text_features
 from indicoio import emotion
 from indicoio.utils.errors import IndicoError
 
@@ -169,7 +169,7 @@ class BatchAPIRun(unittest.TestCase):
         response = relevance(test_data, test_query)
         self.assertTrue(isinstance(response, list))
         self.assertTrue(response[0] > 0.5)
-        self.assertTrue(response[1] > 0.3)
+        self.assertTrue(response[1] > 0.2)
         self.assertEqual(len(response), 2)
 
     def test_batch_relevance(self):
@@ -178,7 +178,7 @@ class BatchAPIRun(unittest.TestCase):
         response = relevance(test_data, test_query)
         self.assertTrue(isinstance(response, list))
         self.assertTrue(response[0][0] > 0.5)
-        self.assertTrue(response[0][1] > 0.3)
+        self.assertTrue(response[0][1] > 0.2)
         self.assertEqual(len(response), 2)
         self.assertEqual(len(response[0]), 2)
         self.assertEqual(len(response[1]), 2)
@@ -196,46 +196,6 @@ class BatchAPIRun(unittest.TestCase):
         self.assertEqual(len(response), 2)
         self.assertEqual(len(response[0]), 300)
         self.assertEqual(len(response[1]), 300)
-
-    def test_people(self):
-        test_data = 'Barack Obama is scheduled to give a talk next Saturday at the White House.'
-        response = people(test_data)
-        self.assertTrue(isinstance(response, list))
-        sorted_response = sorted(response, key=lambda x: x['confidence'], reverse=True)
-        self.assertTrue(sorted_response[0]['text'] == 'Barack Obama')
-
-        test_data = [test_data] * 2
-        response = people(test_data)
-        self.assertTrue(isinstance(response, list))
-        sorted_response = [sorted(arr, key=lambda x: x['confidence'], reverse=True) for arr in response]
-        self.assertEqual(len(sorted_response), 2)
-        self.assertTrue(sorted_response[0][0]['text'] == 'Barack Obama')
-
-    def test_places(self):
-        test_data = "Lets all go to Virginia Beach before it gets too cold to wander outside."
-        response = places(test_data)
-        self.assertTrue(isinstance(response, list))
-        sorted_response = sorted(response, key=lambda x: x['confidence'], reverse=True)
-        self.assertTrue('Virginia' in sorted_response[0]['text'])
-
-        test_data = [test_data] * 2
-        response = places(test_data)
-        self.assertTrue(isinstance(response, list))
-        sorted_response = [sorted(arr, key=lambda x: x['confidence'], reverse=True) for arr in response]
-        self.assertTrue('Virginia' in sorted_response[0][0]['text'])
-
-    def test_organizations(self):
-        test_data = "A year ago, the New York Times published confidential comments about ISIS' ideology by Major General Michael K. Nagata, then U.S. Special Operations commander in the Middle East."
-        response = organizations(test_data)
-        self.assertTrue(isinstance(response, list))
-        sorted_response = sorted(response, key=lambda x: x['confidence'], reverse=True)
-        self.assertTrue('ISIS' in sorted_response[0]['text'])
-
-        test_data = [test_data] * 2
-        response = organizations(test_data)
-        self.assertTrue(isinstance(response, list))
-        sorted_response = [sorted(arr, key=lambda x: x['confidence'], reverse=True) for arr in response]
-        self.assertTrue('ISIS' in sorted_response[0][0]['text'])
 
     def test_batch_multi_api_image(self):
         test_data = [os.path.normpath(os.path.join(DIR, "data/48by48.png")),
