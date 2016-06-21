@@ -2,7 +2,7 @@ from indicoio.utils.api import api_handler
 from indicoio.utils.decorators import detect_batch_decorator
 
 @detect_batch_decorator
-def people(text, cloud=None, batch=None, api_key=None, version=None, **kwargs):
+def people(text, cloud=None, batch=None, api_key=None, version=2, **kwargs):
     """
     Given input text, returns references to specific persons found in the text
 
@@ -30,7 +30,7 @@ def people(text, cloud=None, batch=None, api_key=None, version=None, **kwargs):
 
 
 @detect_batch_decorator
-def places(text, cloud=None, batch=None, api_key=None, version=None, **kwargs):
+def places(text, cloud=None, batch=None, api_key=None, version=2, **kwargs):
     """
     Given input text, returns references to specific places found in the text
 
@@ -59,7 +59,7 @@ def places(text, cloud=None, batch=None, api_key=None, version=None, **kwargs):
 
 
 @detect_batch_decorator
-def organizations(text, cloud=None, batch=None, api_key=None, version=None, **kwargs):
+def organizations(text, cloud=None, batch=None, api_key=None, version=2, **kwargs):
     """
     Given input text, returns references to specific organizations found in the text
 
