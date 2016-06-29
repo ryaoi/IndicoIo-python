@@ -52,3 +52,4 @@ v0.15.1 Thu Mar 31 -- Change default settings for relevance and text features AP
 v0.15.3 Wed Apr 27 -- More efficient status endpoint for custom collections
 v0.15.4 Thu June 9 -- Convert tuples to lists in input to custom collections API
 v0.15.5 Tues June 14 -- Political API upgrade to version 2
+v0.15.6 Wed June 29 -- NER API upgrade to version 2
