@@ -204,6 +204,34 @@ class Collection(object):
                 raise IndicoError("Collection status failed with: {0}".format(status))
             time.sleep(interval)
 
+    def register(self, cloud=None, api_key=None, version=None, **kwargs):
+        kwargs['collection'] = self.collection
+        url_params = {"batch": False, "api_key": api_key, "version": version, "method": "register"}
+        return api_handler(None, cloud=cloud, api="custom", url_params=url_params, private=True, **kwargs)
+
+    def deregister(self, cloud=None, api_key=None, version=None, **kwargs):
+        kwargs['collection'] = self.collection
+        url_params = {"batch": False, "api_key": api_key, "version": version, "method": "deregister"}
+        return api_handler(None, cloud=cloud, api="custom", url_params=url_params, private=True, **kwargs)
+
+    def authorize(self, email, cloud=None, api_key=None, version=None, **kwargs):
+        kwargs['collection'] = self.collection
+        kwargs['email'] = email
+        url_params = {"batch": False, "api_key": api_key, "version": version, "method": "authorize"}
+        return api_handler(None, cloud=cloud, api="custom", url_params=url_params, private=True, **kwargs)
+
+    def deauthorize(self, email, cloud=None, api_key=None, version=None, **kwargs):
+        kwargs['collection'] = self.collection
+        kwargs['email'] = email
+        url_params = {"batch": False, "api_key": api_key, "version": version, "method": "deauthorize"}
+        return api_handler(None, cloud=cloud, api="custom", url_params=url_params, private=True, **kwargs)
+
+    def rename(self, name, cloud=None, api_key=None, version=None, **kwargs):
+        kwargs['collection'] = self.collection
+        kwargs['name'] = name
+        url_params = {"batch": False, "api_key": api_key, "version": version, "method": "rename"}
+        return api_handler(None, cloud=cloud, api="custom", url_params=url_params, private=True, **kwargs)
+
 
 def collections(cloud=None, api_key=None, version=None, **kwargs):
     """
