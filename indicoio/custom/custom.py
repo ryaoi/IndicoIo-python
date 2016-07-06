@@ -9,9 +9,18 @@ from indicoio.utils.errors import IndicoError
 class Collection(object):
 
     def __init__(self, collection, *args, **kwargs):
-        self.collection = collection
-        self.domain = kwargs.get("domain")
-        self.shared = kwargs.get("shared")
+        self.keywords = {
+          'domain': kwargs.get('domain'),
+          'shared': kwargs.get('shared'),
+          'collection': collection
+        }
+
+    def _api_handler(self, *args, **kwargs):
+        """
+        Thin wrapper around api_handler from `indicoio.utils.api` to add in stored keyword argument to the JSON body
+        """ 
+        keyword_arguments = dict(self.keywords.items() + kwargs.items())
+        return api_handler(*args, **keyword_arguments)
 
     def add_data(self, data, cloud=None, batch=False, api_key=None, version=None, **kwargs):
         """
@@ -45,13 +54,8 @@ class Collection(object):
             data = list(data)
             data[0] = image_preprocess(data[0], batch=batch)
 
-        kwargs['collection'] = self.collection
-        if self.domain:
-            kwargs["domain"] = self.domain
-        if self.shared:
-            kwargs["shared"] = self.shared
         url_params = {"batch": batch, "api_key": api_key, "version": version, 'method': "add_data"}
-        return api_handler(data, cloud=cloud, api="custom", url_params=url_params, **kwargs)
+        return self._api_handler(data, cloud=cloud, api="custom", url_params=url_params, **kwargs)
 
 
     def train(self, cloud=None, batch=False, api_key=None, version=None, **kwargs):
@@ -66,11 +70,8 @@ class Collection(object):
           elsewhere. This allows the API to recognize a request as yours and automatically route it
           to the appropriate destination.
         """
-        kwargs['collection'] = self.collection
-        if self.shared:
-            kwargs["shared"] = self.shared
         url_params = {"batch": batch, "api_key": api_key, "version": version, 'method': "train"}
-        return api_handler(self.collection, cloud=cloud, api="custom", url_params=url_params, **kwargs)
+        return self._api_handler(self.keywords['collection'], cloud=cloud, api="custom", url_params=url_params, **kwargs)
 
 
     def predict(self, data, cloud=None, batch=False, api_key=None, version=None, **kwargs):
@@ -94,14 +95,9 @@ class Collection(object):
           to the appropriate destination.
         """
         batch = detect_batch(data)
-        if self.domain:
-            kwargs["domain"] = self.domain
-        if self.shared:
-            kwargs["shared"] = self.shared
-        kwargs['collection'] = self.collection
         data = image_preprocess(data, batch=batch)
         url_params = {"batch": batch, "api_key": api_key, "version": version}
-        return api_handler(data, cloud=cloud, api="custom", url_params=url_params, **kwargs)
+        return self._api_handler(data, cloud=cloud, api="custom", url_params=url_params, **kwargs)
 
 
     def clear(self, cloud=None, api_key=None, version=None, **kwargs):
@@ -119,22 +115,16 @@ class Collection(object):
           elsewhere. This allows the API to recognize a request as yours and automatically route it
           to the appropriate destination.
         """
-        kwargs['collection'] = self.collection
-        if self.shared:
-            kwargs["shared"] = self.shared
         url_params = {"batch": False, "api_key": api_key, "version": version, "method": "clear_collection"}
-        return api_handler(None, cloud=cloud, api="custom", url_params=url_params, **kwargs)
+        return self._api_handler(None, cloud=cloud, api="custom", url_params=url_params, **kwargs)
 
 
     def info(self, cloud=None, api_key=None, version=None, **kwargs):
         """
         Return the current state of the model associated with a given collection
         """
-        kwargs['collection'] = self.collection
-        if self.shared:
-            kwargs["shared"] = self.shared
         url_params = {"batch": False, "api_key": api_key, "version": version, "method": "info"}
-        return api_handler(None, cloud=cloud, api="custom", url_params=url_params, **kwargs)
+        return self._api_handler(None, cloud=cloud, api="custom", url_params=url_params, **kwargs)
 
 
     def remove_example(self, data, cloud=None, batch=False, api_key=None, version=None, **kwargs):
@@ -154,13 +144,10 @@ class Collection(object):
           elsewhere. This allows the API to recognize a request as yours and automatically route it
           to the appropriate destination.
         """
-        kwargs['collection'] = self.collection
-        if self.shared:
-            kwargs["shared"] = self.shared
         batch = detect_batch(data)
         data = image_preprocess(data, batch=batch)
         url_params = {"batch": batch, "api_key": api_key, "version": version, 'method': 'remove_example'}
-        return api_handler(data, cloud=cloud, api="custom", url_params=url_params, **kwargs)
+        return self._api_handler(data, cloud=cloud, api="custom", url_params=url_params, **kwargs)
 
     def wait(self, interval=1, **kwargs):
         """
@@ -188,10 +175,9 @@ class Collection(object):
           to the appropriate destination.
         make_public (optional) - Boolean: When True, this option gives all indico users read access to your model.
         """
-        kwargs['collection'] = self.collection
         kwargs['make_public'] = make_public
         url_params = {"batch": False, "api_key": api_key, "version": version, "method": "register"}
-        return api_handler(None, cloud=cloud, api="custom", url_params=url_params, **kwargs)
+        return self._api_handler(None, cloud=cloud, api="custom", url_params=url_params, **kwargs)
 
     def deregister(self, cloud=None, api_key=None, version=None, **kwargs):
         """
@@ -206,9 +192,8 @@ class Collection(object):
           elsewhere. This allows the API to recognize a request as yours and automatically route it
           to the appropriate destination.
         """
-        kwargs['collection'] = self.collection
         url_params = {"batch": False, "api_key": api_key, "version": version, "method": "deregister"}
-        return api_handler(None, cloud=cloud, api="custom", url_params=url_params, **kwargs)
+        return self._api_handler(None, cloud=cloud, api="custom", url_params=url_params, **kwargs)
 
     def authorize(self, email, permission_type='read', cloud=None, api_key=None, version=None, **kwargs):
         """
@@ -226,11 +211,10 @@ class Collection(object):
           elsewhere. This allows the API to recognize a request as yours and automatically route it
           to the appropriate destination.
         """
-        kwargs['collection'] = self.collection
         kwargs['permission_type'] = permission_type
         kwargs['email'] = email
         url_params = {"batch": False, "api_key": api_key, "version": version, "method": "authorize"}
-        return api_handler(None, cloud=cloud, api="custom", url_params=url_params, **kwargs)
+        return self._api_handler(None, cloud=cloud, api="custom", url_params=url_params, **kwargs)
 
     def deauthorize(self, email, cloud=None, api_key=None, version=None, **kwargs):
         """
@@ -245,10 +229,9 @@ class Collection(object):
           elsewhere. This allows the API to recognize a request as yours and automatically route it
           to the appropriate destination.
         """
-        kwargs['collection'] = self.collection
         kwargs['email'] = email
         url_params = {"batch": False, "api_key": api_key, "version": version, "method": "deauthorize"}
-        return api_handler(None, cloud=cloud, api="custom", url_params=url_params, **kwargs)
+        return self._api_handler(None, cloud=cloud, api="custom", url_params=url_params, **kwargs)
 
     def rename(self, name, cloud=None, api_key=None, version=None, **kwargs):
         """
@@ -264,11 +247,11 @@ class Collection(object):
           elsewhere. This allows the API to recognize a request as yours and automatically route it
           to the appropriate destination.
         """
-        kwargs['collection'] = self.collection
         kwargs['name'] = name
-        self.collection = name
         url_params = {"batch": False, "api_key": api_key, "version": version, "method": "rename"}
-        return api_handler(None, cloud=cloud, api="custom", url_params=url_params, **kwargs)
+        result = self._api_handler(None, cloud=cloud, api="custom", url_params=url_params, **kwargs)
+        self.keywords['collection'] = name
+        return result
 
 
 def collections(cloud=None, api_key=None, version=None, **kwargs):
