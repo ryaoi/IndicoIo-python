@@ -11,6 +11,7 @@ class Collection(object):
     def __init__(self, collection, *args, **kwargs):
         self.collection = collection
         self.domain = kwargs.get("domain")
+        self.shared = kwargs.get("shared")
 
     def add_data(self, data, cloud=None, batch=False, api_key=None, version=None, **kwargs):
         """
@@ -47,6 +48,8 @@ class Collection(object):
         kwargs['collection'] = self.collection
         if self.domain:
             kwargs["domain"] = self.domain
+        if self.shared:
+            kwargs["shared"] = self.shared
         url_params = {"batch": batch, "api_key": api_key, "version": version, 'method': "add_data"}
         return api_handler(data, cloud=cloud, api="custom", url_params=url_params, **kwargs)
 
@@ -64,6 +67,8 @@ class Collection(object):
           to the appropriate destination.
         """
         kwargs['collection'] = self.collection
+        if self.shared:
+            kwargs["shared"] = self.shared
         url_params = {"batch": batch, "api_key": api_key, "version": version, 'method': "train"}
         return api_handler(self.collection, cloud=cloud, api="custom", url_params=url_params, **kwargs)
 
@@ -91,6 +96,8 @@ class Collection(object):
         batch = detect_batch(data)
         if self.domain:
             kwargs["domain"] = self.domain
+        if self.shared:
+            kwargs["shared"] = self.shared
         kwargs['collection'] = self.collection
         data = image_preprocess(data, batch=batch)
         url_params = {"batch": batch, "api_key": api_key, "version": version}
@@ -113,6 +120,8 @@ class Collection(object):
           to the appropriate destination.
         """
         kwargs['collection'] = self.collection
+        if self.shared:
+            kwargs["shared"] = self.shared
         url_params = {"batch": False, "api_key": api_key, "version": version, "method": "clear_collection"}
         return api_handler(None, cloud=cloud, api="custom", url_params=url_params, **kwargs)
 
@@ -122,6 +131,8 @@ class Collection(object):
         Return the current state of the model associated with a given collection
         """
         kwargs['collection'] = self.collection
+        if self.shared:
+            kwargs["shared"] = self.shared
         url_params = {"batch": False, "api_key": api_key, "version": version, "method": "info"}
         return api_handler(None, cloud=cloud, api="custom", url_params=url_params, **kwargs)
 
@@ -144,17 +155,19 @@ class Collection(object):
           to the appropriate destination.
         """
         kwargs['collection'] = self.collection
+        if self.shared:
+            kwargs["shared"] = self.shared
         batch = detect_batch(data)
         data = image_preprocess(data, batch=batch)
         url_params = {"batch": batch, "api_key": api_key, "version": version, 'method': 'remove_example'}
         return api_handler(data, cloud=cloud, api="custom", url_params=url_params, **kwargs)
 
-    def wait(self, interval=1):
+    def wait(self, interval=1, **kwargs):
         """
         Block until the collection's model is completed training
         """
         while True:
-            status = self.info().get('status')
+            status = self.info(**kwargs).get('status')
             if status == "ready":
                 break
             if status != "training":
