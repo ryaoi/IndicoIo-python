@@ -38,7 +38,10 @@ def api_handler(arg, cloud, api, url_params=None, **kwargs):
     headers["X-ApiKey"] = url_params.get("api_key") or config.api_key
     url = create_url(url_protocol, host, api, dict(kwargs, **url_params))
 
-    data = {'data': arg}
+    data = {}
+    if arg != None:
+        data['data'] = arg
+        
     data.update(**kwargs)
     json_data = json.dumps(data)
 
