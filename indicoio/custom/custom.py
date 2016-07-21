@@ -49,7 +49,8 @@ class Collection(object):
             data = map(list, data)
             X, Y = zip(*data)
             X = image_preprocess(X, batch=batch)
-            data = map(list, zip(X, Y))
+            # must type cast map obj to list for python3 compatability
+            data = list(map(list, zip(X, Y))) 
         else:
             data = list(data)
             data[0] = image_preprocess(data[0], batch=batch)
