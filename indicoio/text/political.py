@@ -1,6 +1,7 @@
 from indicoio.utils.api import api_handler
 from indicoio.utils.decorators import detect_batch_decorator
 
+
 @detect_batch_decorator
 def political(text, cloud=None, batch=False, api_key=None, version=2, **kwargs):
     """

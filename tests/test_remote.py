@@ -21,13 +21,9 @@ class BatchAPIRun(unittest.TestCase):
 
     def setUp(self):
         self.api_key = config.api_key
-        config.url_protocol = "http"
 
         if not all(self.api_key):
             raise SkipTest
-
-    def tearDown(self):
-        config.url_protocol = "https"
 
     def test_batch_texttags(self):
         test_data = ["On Monday, president Barack Obama will be..."]

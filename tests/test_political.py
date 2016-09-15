@@ -15,13 +15,9 @@ POLITICAL_SET = set(['Libertarian', 'Liberal', 'Conservative', 'Green'])
 class Political(unittest.TestCase):
     def setUp(self):
         self.api_key = config.api_key
-        config.url_protocol = "http"
 
         if not all(self.api_key):
             raise SkipTest
-
-    def tearDown(self):
-        config.url_protocol = "https"
 
     def test_batch_political(self):
         response = political([TEST_DATA], version=1)
