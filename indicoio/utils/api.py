@@ -5,6 +5,9 @@ Handles making requests to the IndicoApi Server
 import json
 import requests
 import warnings
+from itertools import islice, chain
+import os.path
+import datetime
 
 try:
     from urllib import urlencode
@@ -15,15 +18,40 @@ from indicoio.utils.errors import IndicoError
 from indicoio import JSON_HEADERS
 from indicoio import config
 
-def api_handler(arg, cloud, api, url_params=None, **kwargs):
+
+def batched(iterable, size):
+    """
+    Split an iterable into constant sized chunks
+    Recipe from http://stackoverflow.com/a/8290514
+    """
+    sourceiter = iter(iterable)
+    while True:
+        batchiter = islice(sourceiter, size)
+        yield list(chain([batchiter.next()], batchiter))
+
+
+def standardize_input_data(data):
+    """
+    Ensure utf-8 encoded strings are passed to the indico API
+    """
+    if type(data) == bytes:
+        data = data.decode('utf-8')
+    if type(data) == list:
+        data = [
+            el.decode('utf-8') if type(data) == bytes else el 
+            for el in data
+        ]
+    return data
+
+
+def api_handler(input_data, cloud, api, url_params=None, batch_size=None, **kwargs):
     """
     Sends finalized request data to ML server and receives response.
+    If a batch_size is specified, breaks down a request into smaller 
+    component requests and aggregates the results.
     """
     url_params = url_params or {}
-    if type(arg) == bytes:
-        arg = arg.decode('utf-8')
-    if type(arg) == list:
-        arg = [a.decode('utf-8') if type(arg) == bytes else a for a in arg]
+    input_data = standardize_input_data(input_data)
    
     cloud = cloud or config.cloud
     host = "%s.indico.domains" % cloud if cloud else config.host
@@ -37,10 +65,49 @@ def api_handler(arg, cloud, api, url_params=None, **kwargs):
     headers = dict(JSON_HEADERS)
     headers["X-ApiKey"] = url_params.get("api_key") or config.api_key
     url = create_url(url_protocol, host, api, dict(kwargs, **url_params))
+    return collect_api_results(input_data, url, headers, api, batch_size, kwargs)
 
+
+def collect_api_results(input_data, url, headers, api, batch_size, kwargs):
+    """
+    Optionally split up a single request into a series of requests
+    to ensure timely HTTP responses.
+
+    Could eventually speed up the time required to receive a response by
+    sending batches to the indico API concurrently
+    """
+    if batch_size:
+        results = []
+        for batch in batched(input_data, size=batch_size):
+            try:
+                results.extend(send_request(batch, url, headers, kwargs))
+            except IndicoError as e:
+                # Log results so far to file
+                timestamp = datetime.datetime.now().strftime('%Y-%m-%d-%H:%M:%S')
+                filename = "indico-{api}-{timestamp}.json".format(
+                    api=api,
+                    timestamp=timestamp
+                )
+                json.dump(results, open(filename, 'w'))
+                raise IndicoError(
+                    "The following error occurred while processing your data: `{err}` "
+                    "Partial results have been saved to {filename}".format(
+                        err=e,
+                        filename=os.path.abspath(filename)
+                    )
+                )
+        return results
+    else:
+        return send_request(input_data, url, headers, kwargs)       
+
+
+def send_request(input_data, url, headers, kwargs):
+    """
+    Use the requests library to send of an HTTP call to the indico servers
+    """
     data = {}
-    if arg != None:
-        data['data'] = arg
+    if input_data != None:
+        data['data'] = input_data
         
     data.update(**kwargs)
     json_data = json.dumps(data)
@@ -63,6 +130,9 @@ def api_handler(arg, cloud, api, url_params=None, **kwargs):
 
 
 def create_url(url_protocol, host, api, url_params):
+    """
+    Generate the proper url for sending off data for analysis
+    """
     is_batch = url_params.pop("batch", None)
     apis = url_params.pop("apis", None)
     version = url_params.pop("version", None) or url_params.pop("v", None)

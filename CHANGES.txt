@@ -55,3 +55,4 @@ v0.15.5 Tues June 14 -- Political API upgrade to version 2
 v0.15.6 Wed June 29 -- NER API upgrade to version 2
 v0.16.0 Thu Jul 7 -- Support for custom collection permissioning 
 v0.16.1 Thu Jul 21 -- Patch for Python3 custom collection's data adding bug
+v0.16.2 Fri Sep 16 -- Add support for batch_size keyword to split large batches of data into smaller chunks

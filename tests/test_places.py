@@ -7,13 +7,9 @@ from indicoio import places
 class Places(unittest.TestCase):
     def setUp(self):
         self.api_key = config.api_key
-        config.url_protocol = "http"
 
         if not all(self.api_key):
             raise SkipTest
-
-    def tearDown(self):
-        config.url_protocol = "https"
 
     def test_places_v2(self):
         test_data = "Lets all go to Virginia beach before it gets too cold to wander outside."
