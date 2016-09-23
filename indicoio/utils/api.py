@@ -7,6 +7,7 @@ import requests
 import warnings
 from itertools import islice, chain
 import os.path
+import urlparse
 import datetime
 
 try:
@@ -118,7 +119,8 @@ def send_request(input_data, url, headers, kwargs):
     if warning:
         warnings.warn(warning)
 
-    if response.status_code == 503 and cloud != None:
+    cloud = urlparse.urlparse(url).hostname
+    if response.status_code == 503 and not cloud.endswith('.indico.io'):
         raise IndicoError("Private cloud '%s' does not include api '%s'" % (cloud, api))
 
     json_results = response.json()
