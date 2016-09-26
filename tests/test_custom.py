@@ -21,12 +21,17 @@ class CustomAPIsTestCase(unittest.TestCase):
 
     def tearDown(self):
         try:
-            Collection(collection_name).clear()
+            Collection(collection_name).deregister()
         except IndicoError:
             pass
 
         try:
-            Collection(collection_name).deregister()
+            Collection(alternate_name).deregister()
+        except IndicoError:
+            pass
+
+        try:
+            Collection(collection_name).clear()
         except IndicoError:
             pass
 
@@ -40,10 +45,6 @@ class CustomAPIsTestCase(unittest.TestCase):
         except IndicoError:
             pass
 
-        try:
-            Collection(alternate_name).deregister()
-        except IndicoError:
-            pass
 
     def test_add_predict(self):
         collection = Collection(collection_name)
