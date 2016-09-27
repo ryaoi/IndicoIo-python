@@ -28,5 +28,6 @@ from indicoio.images.features import facial_features, image_features
 from indicoio.images.faciallocalization import facial_localization
 from indicoio.images.recognition import image_recognition
 from indicoio.images.filtering import content_filtering
+from indicoio.text.summarization import summarization
 from indicoio.utils.multi import analyze_image, analyze_text, intersections
 from indicoio.utils.errors import IndicoError

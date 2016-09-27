@@ -8,7 +8,7 @@ class KeywordsV2(unittest.TestCase):
     def setUp(self):
         self.api_key = config.api_key
 
-        if not all(self.api_key):
+        if not self.api_key:
             raise SkipTest
 
     def test_keywords_v2(self):
