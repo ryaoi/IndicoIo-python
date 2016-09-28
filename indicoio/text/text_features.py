@@ -1,5 +1,5 @@
-from indicoio.utils.api import api_handler
-from indicoio.utils.decorators import detect_batch_decorator
+from ..utils.api import api_handler
+from ..utils.decorators import detect_batch_decorator
 
 
 @detect_batch_decorator

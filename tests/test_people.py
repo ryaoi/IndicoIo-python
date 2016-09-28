@@ -9,7 +9,7 @@ class People(unittest.TestCase):
         self.api_key = config.api_key
 
         if not self.api_key:
-            raise SkipTest
+            raise unittest.SkipTest
 
     def test_people_v2(self):
         test_data = 'Barack Obama is scheduled to give a talk next Saturday at the White House.'

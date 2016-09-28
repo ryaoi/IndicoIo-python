@@ -9,7 +9,7 @@ class Organizations(unittest.TestCase):
         self.api_key = config.api_key
 
         if not self.api_key:
-            raise SkipTest
+            raise unittest.SkipTest
 
     def test_organizations_v2(self):
         test_data = "A year ago, the New York Times published confidential comments about ISIS' ideology by Major General Michael K. Nagata, then U.S. Special Operations commander in the Middle East."

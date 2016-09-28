@@ -5,7 +5,6 @@ import os, random
 from PIL import Image
 from requests import ConnectionError
 
-from nose.plugins.skip import Skip, SkipTest
 from six import PY3
 
 from indicoio import config
@@ -23,7 +22,7 @@ class BatchAPIRun(unittest.TestCase):
         self.api_key = config.api_key
 
         if not self.api_key:
-            raise SkipTest
+            raise unittest.SkipTest
 
     def test_batch_texttags(self):
         test_data = ["On Monday, president Barack Obama will be..."]
@@ -196,25 +195,25 @@ class BatchAPIRun(unittest.TestCase):
     def test_batch_multi_api_image(self):
         test_data = [os.path.normpath(os.path.join(DIR, "data/48by48.png")),
                      os.path.normpath(os.path.join(DIR, "data/48by48.png"))]
-        response = analyze_image(test_data, apis=config.IMAGE_APIS)
+        response = analyze_image(test_data, apis=config.IMAGE_APIS.keys())
 
         self.assertTrue(isinstance(response, dict))
-        self.assertTrue(set(response.keys()) == set(config.IMAGE_APIS))
+        self.assertTrue(set(response.keys()) == set(config.IMAGE_APIS.keys()))
         self.assertTrue(isinstance(response["fer"], list))
 
     def test_batch_multi_api_text(self):
         test_data = ['clearly an english sentence']
         response = analyze_text(test_data)
 
-        self.assertTrue(isinstance(response, dict))
-        self.assertTrue(set(response.keys()) <= set(config.TEXT_APIS))
+        self.assertTrue(isinstance(response, list))
+        self.assertTrue(set(response[0].keys()) <= set(config.TEXT_APIS.keys()))
 
     def test_default_multi_api_text(self):
-        test_data = ['clearly an english sentence']
+        test_data = 'clearly an english sentence'
         response = analyze_text(test_data)
 
         self.assertTrue(isinstance(response, dict))
-        self.assertTrue(set(response.keys()) <= set(config.TEXT_APIS))
+        self.assertTrue(set(response.keys()) <= set(config.TEXT_APIS.keys()))
 
     def test_multi_api_bad_api(self):
         self.assertRaises(IndicoError,
@@ -485,17 +484,17 @@ class FullAPIRun(unittest.TestCase):
 
     def test_multi_api_image(self):
         test_data = os.path.normpath(os.path.join(DIR, "data/48by48.png"))
-        response = analyze_image(test_data, apis=config.IMAGE_APIS)
+        response = analyze_image(test_data, apis=config.IMAGE_APIS.keys())
 
         self.assertTrue(isinstance(response, dict))
-        self.assertTrue(set(response.keys()) == set(config.IMAGE_APIS))
+        self.assertTrue(set(response.keys()) == set(config.IMAGE_APIS.keys()))
 
     def test_multi_api_text(self):
         test_data = 'clearly an english sentence'
         response = analyze_text(test_data)
 
         self.assertTrue(isinstance(response, dict))
-        self.assertTrue(set(response.keys()) <= set(config.TEXT_APIS))
+        self.assertTrue(set(response.keys()) <= set(config.TEXT_APIS.keys()))
 
     def test_intersections_not_enough_data(self):
         test_data = ['test_Data']

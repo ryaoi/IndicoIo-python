@@ -10,7 +10,7 @@ class SummarizationTest(unittest.TestCase):
         self.api_key = config.api_key
 
         if not self.api_key:
-            raise SkipTest
+            raise unittest.SkipTest
 
     def test_summarization(self):
         response = summarization(TEXT_DATA, top_n=5)

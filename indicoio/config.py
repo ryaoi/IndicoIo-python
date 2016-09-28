@@ -78,10 +78,6 @@ IMAGE_APIS = [
     'facial_localization'
 ]
 
-MULTIAPI_NOT_SUPPORTED = [
-    'relevance',
-    'personas'
-]
 
 OTHER_APIS = [
     "analyze_text",
