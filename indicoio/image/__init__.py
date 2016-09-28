@@ -1,13 +1,15 @@
-from importlib import import_module
+from content_filtering import content_filtering
+from facial_features import facial_features
+from facial_localization import facial_localization
+from fer import fer
+from image_features import image_features
+from image_recognition import image_recognition
+
 IMAGE_APIS = {
-    name: getattr(import_module(".{0}".format(name), package="indicoio.image"), name)
-        for name in [
-            "content_filtering",
-            "facial_features",
-            "facial_localization",
-            "fer",
-            "image_features",
-            "image_recognition"
-        ]
+    "content_filtering": content_filtering,
+    "facial_features": facial_features,
+    "facial_localization": facial_localization,
+    "fer": fer,
+    "image_features": image_features,
+    "image_recognition": image_recognition
 }
-globals().update(IMAGE_APIS)
