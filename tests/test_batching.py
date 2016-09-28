@@ -26,7 +26,6 @@ class TestBatchSize(unittest.TestCase):
             response = sentiment_hq(test_data, batch_size=20)
 
         files = glob.glob('indico-sentimenthq-*.json')
-        print files
         assert len(files)
 
         for filename in files:

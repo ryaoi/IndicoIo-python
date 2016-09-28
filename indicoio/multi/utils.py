@@ -1,11 +1,13 @@
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
 from ..utils.errors import IndicoError
 from ..utils.decorators import detect_batch_decorator
 
 MULTIAPI_NOT_SUPPORTED = [
-    'relevance',
-    'personas'
+    'relevance'
 ]
 
+EXECUTOR = ThreadPoolExecutor(max_workers=4)
 def multi(data, datatype, apis, accepted_apis, batch=False,**kwargs):
     """
     Helper to make multi requests of different types.
@@ -28,9 +30,13 @@ def multi(data, datatype, apis, accepted_apis, batch=False,**kwargs):
     cloud = kwargs.pop("cloud", None)
     api_key = kwargs.pop('api_key', None)
 
-    api_results = {}
+    api_results_executor = {}
     for api in apis:
-        api_results[api] = accepted_apis[api](data, cloud=cloud, api_key=api_key, batch=batch, **kwargs)
+        api_results_executor[EXECUTOR.submit(accepted_apis[api], data, cloud=cloud, api_key=api_key, batch=batch, **kwargs)] = api
+
+    api_results = {}
+    for future in concurrent.futures.as_completed(api_results_executor):
+        api_results[api_results_executor[future]] = future.result()
 
     if not batch:
         return api_results
