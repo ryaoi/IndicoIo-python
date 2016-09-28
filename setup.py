@@ -13,7 +13,8 @@ setup(
     packages=[
         "indicoio",
         "indicoio.text",
-        "indicoio.images",
+        "indicoio.image",
+        "indicoio.multi",
         "indicoio.utils",
         "indicoio.custom",
         "tests",
