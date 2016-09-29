@@ -29,7 +29,7 @@ class TestBatchSize(unittest.TestCase):
         assert len(files)
 
         for filename in files:
-            data = json.load(open(filename, 'wb'))
+            data = json.load(open(filename, 'r'))
 
             # first four batches should have returned
             assert len(data) == 80
