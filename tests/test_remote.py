@@ -13,6 +13,8 @@ from indicoio import keywords, sentiment_hq, twitter_engagement, intersections, 
 from indicoio import personas, personality, relevance, text_features
 from indicoio import emotion
 from indicoio.utils.errors import IndicoError
+from indicoio.image import IMAGE_APIS
+from indicoio.text import TEXT_APIS
 
 DIR = os.path.dirname(os.path.realpath(__file__))
 
@@ -195,25 +197,24 @@ class BatchAPIRun(unittest.TestCase):
     def test_batch_multi_api_image(self):
         test_data = [os.path.normpath(os.path.join(DIR, "data/48by48.png")),
                      os.path.normpath(os.path.join(DIR, "data/48by48.png"))]
-        response = analyze_image(test_data, apis=config.IMAGE_APIS.keys())
-
+        response = analyze_image(test_data, apis=IMAGE_APIS.keys())
         self.assertTrue(isinstance(response, dict))
-        self.assertTrue(set(response.keys()) == set(config.IMAGE_APIS.keys()))
+        self.assertTrue(set(response.keys()) == set(IMAGE_APIS.keys()))
         self.assertTrue(isinstance(response["fer"], list))
 
     def test_batch_multi_api_text(self):
         test_data = ['clearly an english sentence']
         response = analyze_text(test_data)
 
-        self.assertTrue(isinstance(response, list))
-        self.assertTrue(set(response[0].keys()) <= set(config.TEXT_APIS.keys()))
+        self.assertTrue(isinstance(response, dict))
+        self.assertTrue(set(response.keys()) <= set(TEXT_APIS.keys()))
 
     def test_default_multi_api_text(self):
         test_data = 'clearly an english sentence'
         response = analyze_text(test_data)
 
         self.assertTrue(isinstance(response, dict))
-        self.assertTrue(set(response.keys()) <= set(config.TEXT_APIS.keys()))
+        self.assertTrue(set(response.keys()) <= set(TEXT_APIS.keys()))
 
     def test_multi_api_bad_api(self):
         self.assertRaises(IndicoError,
@@ -484,17 +485,17 @@ class FullAPIRun(unittest.TestCase):
 
     def test_multi_api_image(self):
         test_data = os.path.normpath(os.path.join(DIR, "data/48by48.png"))
-        response = analyze_image(test_data, apis=config.IMAGE_APIS.keys())
+        response = analyze_image(test_data, apis=IMAGE_APIS.keys())
 
         self.assertTrue(isinstance(response, dict))
-        self.assertTrue(set(response.keys()) == set(config.IMAGE_APIS.keys()))
+        self.assertTrue(set(response.keys()) == set(IMAGE_APIS.keys()))
 
     def test_multi_api_text(self):
         test_data = 'clearly an english sentence'
         response = analyze_text(test_data)
 
         self.assertTrue(isinstance(response, dict))
-        self.assertTrue(set(response.keys()) <= set(config.TEXT_APIS.keys()))
+        self.assertTrue(set(response.keys()) <= set(TEXT_APIS.keys()))
 
     def test_intersections_not_enough_data(self):
         test_data = ['test_Data']

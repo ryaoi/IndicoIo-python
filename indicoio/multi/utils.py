@@ -1,3 +1,4 @@
+import concurrent.futures
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from ..utils.errors import IndicoError
@@ -38,10 +39,4 @@ def multi(data, datatype, apis, accepted_apis, batch=False,**kwargs):
     for future in concurrent.futures.as_completed(api_results_executor):
         api_results[api_results_executor[future]] = future.result()
 
-    if not batch:
-        return api_results
-
-    batch_results = []
-    for i in xrange(len(data)):
-        batch_results.append({api: result[i] for api, result in api_results.iteritems()})
-    return batch_results
+    return api_results

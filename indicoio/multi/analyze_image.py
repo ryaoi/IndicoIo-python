@@ -39,6 +39,6 @@ def analyze_image(image, apis=DEFAULT_APIS, **kwargs):
         batch=batch,
         api_key=api_key,
         apis=apis,
-        accepted_apis=IMAGE_APIS
+        accepted_apis=IMAGE_APIS,
         **kwargs
     )
