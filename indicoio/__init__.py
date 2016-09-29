@@ -1,7 +1,7 @@
 from functools import wraps, partial
 import warnings
 
-Version, version, __version__, VERSION = ('0.16.3',) * 4
+Version, version, __version__, VERSION = ('1.0.0',) * 4
 
 JSON_HEADERS = {
     'Content-type': 'application/json',
