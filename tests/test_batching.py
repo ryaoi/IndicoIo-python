@@ -11,7 +11,7 @@ class TestBatchSize(unittest.TestCase):
         self.api_key = config.api_key
 
         if not self.api_key:
-            raise SkipTest
+            raise unittest.SkipTest
 
     def test_batch_size(self):
         test_data = ["Terribly interesting test data."] * 100
@@ -28,11 +28,11 @@ class TestBatchSize(unittest.TestCase):
         files = glob.glob('indico-sentimenthq-*.json')
         assert len(files)
 
-        for file in files:
-            data = json.load(open(file))
+        for filename in files:
+            data = json.load(open(filename, 'r'))
 
             # first four batches should have returned
             assert len(data) == 80
 
             # clean up after ourselves
-            os.remove(file)
+            os.remove(filename)

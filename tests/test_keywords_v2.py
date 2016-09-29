@@ -9,7 +9,7 @@ class KeywordsV2(unittest.TestCase):
         self.api_key = config.api_key
 
         if not self.api_key:
-            raise SkipTest
+            raise unittest.SkipTest
 
     def test_keywords_v2(self):
         test_data = "A working api is key to the success of our young company"
