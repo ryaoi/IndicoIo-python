@@ -1,9 +1,9 @@
 import time
 
-from indicoio.utils.api import api_handler
-from indicoio.utils.decorators import detect_batch
-from indicoio.utils.image import image_preprocess
-from indicoio.utils.errors import IndicoError
+from ..utils.api import api_handler
+from ..utils.decorators import detect_batch
+from ..utils.image import image_preprocess
+from ..utils.errors import IndicoError
 
 
 class Collection(object):
@@ -18,7 +18,7 @@ class Collection(object):
     def _api_handler(self, *args, **kwargs):
         """
         Thin wrapper around api_handler from `indicoio.utils.api` to add in stored keyword argument to the JSON body
-        """ 
+        """
         keyword_arguments = dict(self.keywords.items() + kwargs.items())
         return api_handler(*args, **keyword_arguments)
 
@@ -50,7 +50,7 @@ class Collection(object):
             X, Y = zip(*data)
             X = image_preprocess(X, batch=batch)
             # must type cast map obj to list for python3 compatability
-            data = list(map(list, zip(X, Y))) 
+            data = list(map(list, zip(X, Y)))
         else:
             data = list(data)
             data[0] = image_preprocess(data[0], batch=batch)
@@ -164,7 +164,7 @@ class Collection(object):
 
     def register(self, make_public=False, cloud=None, api_key=None, version=None, **kwargs):
         """
-        This API endpoint allows you to register you collection in order to share read or write 
+        This API endpoint allows you to register you collection in order to share read or write
         access to the collection with another user.
 
         Inputs:
@@ -182,7 +182,7 @@ class Collection(object):
 
     def deregister(self, cloud=None, api_key=None, version=None, **kwargs):
         """
-        If you've shared access to your collection in the past, and now want to revoke all other user's access 
+        If you've shared access to your collection in the past, and now want to revoke all other user's access
         to your collection, simply deregister your collection.
 
         Inputs:

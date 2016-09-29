@@ -52,45 +52,6 @@ class Settings(configparser.ConfigParser):
             None
         )
 
-TEXT_APIS = [
-    'text_tags',
-    'political',
-    'sentiment',
-    'language',
-    'sentiment_hq',
-    'keywords',
-    'twitter_engagement',
-    'personality',
-    'relevance',
-    'people',
-    'places',
-    'organizations',
-    'text_features',
-    'emotion'
-]
-
-IMAGE_APIS = [
-    'fer',
-    'facial_features',
-    'image_features',
-    'image_recognition',
-    'content_filtering',
-    'facial_localization'
-]
-
-MULTIAPI_NOT_SUPPORTED = [
-    'relevance',
-    'personas'
-]
-
-OTHER_APIS = [
-    "analyze_text",
-    "analyze_image",
-    "intersections"
-]
-
-API_NAMES = IMAGE_APIS + TEXT_APIS + OTHER_APIS
-
 SETTINGS = Settings(files=[
     os.path.expanduser("~/.indicorc"),
     os.path.join(os.getcwd(), '.indicorc')

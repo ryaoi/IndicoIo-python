@@ -1,7 +1,6 @@
-from indicoio.utils.api import api_handler
-from indicoio.utils.image import image_preprocess
-from indicoio.utils.decorators import detect_batch_decorator
-
+from ..utils.api import api_handler
+from ..utils.image import image_preprocess
+from ..utils.decorators import detect_batch_decorator
 
 @detect_batch_decorator
 def content_filtering(image, cloud=None, batch=False, api_key=None, version=None, **kwargs):

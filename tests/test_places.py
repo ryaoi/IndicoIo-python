@@ -9,7 +9,7 @@ class Places(unittest.TestCase):
         self.api_key = config.api_key
 
         if not self.api_key:
-            raise SkipTest
+            raise unittest.SkipTest
 
     def test_places_v2(self):
         test_data = "Lets all go to Virginia beach before it gets too cold to wander outside."

@@ -39,7 +39,7 @@ def standardize_input_data(data):
         data = data.decode('utf-8')
     if type(data) == list:
         data = [
-            el.decode('utf-8') if type(data) == bytes else el 
+            el.decode('utf-8') if type(data) == bytes else el
             for el in data
         ]
     return data
@@ -48,12 +48,12 @@ def standardize_input_data(data):
 def api_handler(input_data, cloud, api, url_params=None, batch_size=None, **kwargs):
     """
     Sends finalized request data to ML server and receives response.
-    If a batch_size is specified, breaks down a request into smaller 
+    If a batch_size is specified, breaks down a request into smaller
     component requests and aggregates the results.
     """
     url_params = url_params or {}
     input_data = standardize_input_data(input_data)
-   
+
     cloud = cloud or config.cloud
     host = "%s.indico.domains" % cloud if cloud else config.host
 
@@ -89,7 +89,7 @@ def collect_api_results(input_data, url, headers, api, batch_size, kwargs):
                     api=api,
                     timestamp=timestamp
                 )
-                json.dump(results, open(filename, 'w'))
+                json.dump(results, open(filename, 'wb'))
                 raise IndicoError(
                     "The following error occurred while processing your data: `{err}` "
                     "Partial results have been saved to {filename}".format(
@@ -99,7 +99,7 @@ def collect_api_results(input_data, url, headers, api, batch_size, kwargs):
                 )
         return results
     else:
-        return send_request(input_data, url, headers, kwargs)       
+        return send_request(input_data, url, headers, kwargs)
 
 
 def send_request(input_data, url, headers, kwargs):
@@ -109,7 +109,7 @@ def send_request(input_data, url, headers, kwargs):
     data = {}
     if input_data != None:
         data['data'] = input_data
-        
+
     data.update(**kwargs)
     json_data = json.dumps(data)
 

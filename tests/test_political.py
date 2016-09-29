@@ -17,7 +17,7 @@ class Political(unittest.TestCase):
         self.api_key = config.api_key
 
         if not self.api_key:
-            raise SkipTest
+            raise unittest.SkipTest
 
     def test_batch_political(self):
         response = political([TEST_DATA], version=1)
