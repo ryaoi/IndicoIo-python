@@ -1,9 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import unittest
+
 
 from indicoio import political
-from indicoio import config
+from indico_text_base import TextTest
 
 TEST_DATA = """
 Right now, the Democratic Party, which I have called home my entire life,
@@ -12,12 +12,7 @@ advanced all kinds of evil, big and small, in devotion to this love affair.
 """
 POLITICAL_SET = set(['Libertarian', 'Liberal', 'Conservative', 'Green'])
 
-class Political(unittest.TestCase):
-    def setUp(self):
-        self.api_key = config.api_key
-
-        if not self.api_key:
-            raise unittest.SkipTest
+class PoliticalTest(TextTest):
 
     def test_batch_political(self):
         response = political([TEST_DATA], version=1)

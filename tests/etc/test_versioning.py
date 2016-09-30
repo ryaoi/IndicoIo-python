@@ -1,12 +1,12 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import unittest, os
+import os, unittest
 
-from indicoio import config
 from indicoio import sentiment
 from indicoio import image_features
+from indicoio import config
 
-DIR = os.path.dirname(os.path.realpath(__file__))
+DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "image")
 class TestVersioning(unittest.TestCase):
     def setUp(self):
         self.api_key = config.api_key

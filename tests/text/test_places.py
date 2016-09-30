@@ -1,15 +1,10 @@
-import unittest
 
-from indicoio import config
+
+
 from indicoio import places
+from indico_text_base import TextTest
 
-
-class Places(unittest.TestCase):
-    def setUp(self):
-        self.api_key = config.api_key
-
-        if not self.api_key:
-            raise unittest.SkipTest
+class PlacesTest(TextTest):
 
     def test_places_v2(self):
         test_data = "Lets all go to Virginia beach before it gets too cold to wander outside."

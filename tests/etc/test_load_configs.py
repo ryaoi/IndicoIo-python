@@ -1,11 +1,10 @@
-import os
-import unittest
+import os, unittest
+
 import textwrap
 from six import StringIO
 
-from indicoio import config
 from indicoio.config import Settings
-
+from indicoio import config
 
 class TestConfigureEnv(unittest.TestCase):
     """
