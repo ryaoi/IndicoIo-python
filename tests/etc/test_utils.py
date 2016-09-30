@@ -1,5 +1,3 @@
-import sys
-
 from mock import patch, MagicMock
 
 from indicoio.utils import is_url

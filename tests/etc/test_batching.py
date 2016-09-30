@@ -1,10 +1,7 @@
 import unittest
-import glob
-import os
-import json
+import glob, os, json
 
 from indicoio import config, sentiment_hq, IndicoError
-
 
 class TestBatchSize(unittest.TestCase):
     def setUp(self):
@@ -23,7 +20,7 @@ class TestBatchSize(unittest.TestCase):
         test_data = ["Terribly interesting test data."] * 100
         test_data[98] = ""
         with self.assertRaises(IndicoError):
-            response = sentiment_hq(test_data, batch_size=20)
+            sentiment_hq(test_data, batch_size=20)
 
         files = glob.glob('indico-sentimenthq-*.json')
         assert len(files)

@@ -1,7 +1,7 @@
 import unittest
+
 from indicoio.utils.errors import IndicoError
 from indicoio.custom import Collection, collections
-import time
 
 collection_name = "__test_python_text__"
 alternate_name = "__alt_test_python_text__"
@@ -19,7 +19,7 @@ test_user_email = 'contact@indico.io'
 
 class CustomAPIsTestCase(unittest.TestCase):
 
-    def tearDown(self):
+    def setUp(self):
         try:
             Collection(collection_name).deregister()
         except IndicoError:
@@ -44,6 +44,7 @@ class CustomAPIsTestCase(unittest.TestCase):
             Collection(alternate_name).clear()
         except IndicoError:
             pass
+
 
 
     def test_add_predict(self):
