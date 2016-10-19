@@ -9,7 +9,7 @@ except ImportError:
 
 setup(
     name="IndicoIo",
-    version="1.0.0",
+    version="1.0.1",
     packages=[
         "indicoio",
         "indicoio.text",
