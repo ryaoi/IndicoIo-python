@@ -19,21 +19,12 @@ setup(
         "indicoio.custom",
         "tests",
     ],
-    description="""
-        A Python Wrapper for indico.
-        Use pre-built state of the art machine learning algorithms with a single line of code.
-    """,
+    description="""A Python Wrapper for indico. Use pre-built state of the art machine learning algorithms with a single line of code.""",
     license="MIT License (See LICENSE)",
     long_description=open("README.rst").read(),
     url="https://github.com/IndicoDataSolutions/indicoio-python",
     author="Alec Radford, Slater Victoroff, Aidan McLaughlin, Madison May, Anne Carlson",
-    author_email="""
-        Alec Radford <alec@indico.io>,
-        Slater Victoroff <slater@indico.io>,
-        Aidan McLaughlin <aidan@indico.io>,
-        Madison May <madison@indico.io>,
-        Anne Carlson <annie@indico.io>
-    """,
+    author_email="engineering@indico.io",
     classifiers = [
         "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Developers",
