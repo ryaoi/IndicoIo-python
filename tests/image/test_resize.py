@@ -1,11 +1,11 @@
 from indicoio.utils.image import image_preprocess
 from PIL import Image
-import os, unittest, base64
+import os, base64
 from six import BytesIO
 
-DIR = os.path.dirname(os.path.realpath(__file__))
+from indico_image_base import ImageTest, DIR
 
-class ResizeTests(unittest.TestCase):
+class ResizeTests(ImageTest):
     """
     test image resizing
     """

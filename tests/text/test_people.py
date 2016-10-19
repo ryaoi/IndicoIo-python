@@ -1,15 +1,9 @@
-import unittest
 
-from indicoio import config
+
 from indicoio import people
+from indico_text_base import TextTest
 
-
-class People(unittest.TestCase):
-    def setUp(self):
-        self.api_key = config.api_key
-
-        if not self.api_key:
-            raise unittest.SkipTest
+class PeopleTest(TextTest):
 
     def test_people_v2(self):
         test_data = 'Barack Obama is scheduled to give a talk next Saturday at the White House.'

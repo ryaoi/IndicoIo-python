@@ -1,14 +1,10 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import unittest, os
-
-from indicoio import config
+import os
 from indicoio import image_recognition
+from indico_image_base import ImageTest, DIR
 
-DIR = os.path.dirname(os.path.realpath(__file__))
-class ImageRecognitionTest(unittest.TestCase):
-    def setUp(self):
-        self.api_key = config.api_key
+class ImageRecognitionTest(ImageTest):
 
     def test_single_image_recognition(self):
         test_data = os.path.normpath(os.path.join(DIR, "data", "fear.png"))
@@ -29,6 +25,3 @@ class ImageRecognitionTest(unittest.TestCase):
         test_data = os.path.normpath(os.path.join(DIR, "data", "keyboard.jpg"))
         response = image_recognition(test_data, api_key = self.api_key, top_n=3)
         assert "space bar" in response.keys()
-
-if __name__ == "__main__":
-    unittest.main()

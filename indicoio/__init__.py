@@ -13,5 +13,6 @@ JSON_HEADERS = {
 from .text import *
 from .image import *
 from .multi import *
+from .pdf import *
 
 from indicoio.utils.errors import IndicoError
