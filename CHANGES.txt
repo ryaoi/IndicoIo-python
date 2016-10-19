@@ -58,3 +58,4 @@ v0.16.1 Thu Jul 21 -- Patch for Python3 custom collection's data adding bug
 v0.16.2 Fri Sep 16 -- Add support for batch_size keyword to split large batches of data into smaller chunks
 v0.16.3 Tue Sep 27 -- Add summarization API support
 v1.0.0 Thu Sep 29 -- Refactor for stable release
+v1.0.1 Wed Oct 19 -- Support for PDF Extraction API
