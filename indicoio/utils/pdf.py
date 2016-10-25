@@ -9,6 +9,11 @@ try:
 except:
     from io import BytesIO
 
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
+
 from PIL import Image
 from six import string_types
 
@@ -30,7 +35,7 @@ def pdf_preprocess(pdf, batch=False):
 
 def postprocess_image(image):
     raw_data = image.get('data')
-    
+
     try:
         if ((2, 6) <= sys.version_info < (3, 0)):
             data = b64decode(raw_data)
