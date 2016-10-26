@@ -3,8 +3,9 @@
 import os
 
 from PIL import Image
+
 from indicoio import fer, IndicoError
-from indico_image_base import ImageTest, DIR
+from .indico_image_base import ImageTest, DIR
 
 class FERTest(ImageTest):
 

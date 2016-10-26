@@ -3,7 +3,7 @@
 
 
 from indicoio import political
-from indico_text_base import TextTest
+from .indico_text_base import TextTest
 
 TEST_DATA = """
 Right now, the Democratic Party, which I have called home my entire life,

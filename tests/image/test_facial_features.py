@@ -1,8 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import os
+
 from indicoio import facial_features
-from indico_image_base import ImageTest, DIR
+from .indico_image_base import ImageTest, DIR
 
 class FacialFeaturesTest(ImageTest):
 

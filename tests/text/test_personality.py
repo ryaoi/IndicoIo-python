@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 from indicoio import personality
-from indico_text_base import TextTest
+from .indico_text_base import TextTest
 
 class PersonalityTest(TextTest):
     def test_personalities(self):

@@ -1,7 +1,7 @@
 
 
 from indicoio import organizations
-from indico_text_base import TextTest
+from .indico_text_base import TextTest
 
 class OrganizationsTest(TextTest):
 

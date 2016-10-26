@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from indicoio import keywords
-from indico_text_base import TextTest
+from .indico_text_base import TextTest
 
 class KeywordsTest(TextTest):
 

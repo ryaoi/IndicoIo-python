@@ -3,7 +3,7 @@
 
 
 from indicoio import relevance
-from indico_text_base import TextTest
+from .indico_text_base import TextTest
 
 class RelevanceTest(TextTest):
 

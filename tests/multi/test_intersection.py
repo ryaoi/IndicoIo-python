@@ -1,5 +1,5 @@
 from indicoio import intersections, IndicoError
-from indico_multi_base import MultiTest
+from .indico_multi_base import MultiTest
 
 class IntersectionTest(MultiTest):
 

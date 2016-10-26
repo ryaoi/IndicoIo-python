@@ -1,20 +1,21 @@
-from language import language
-from personality import personality
-from political import political
-from summarization import summarization
-from twitter_engagement import twitter_engagement
-from emotion import emotion
-from organizations import organizations
-from personas import personas
-from relevance import relevance
-from text_features import text_features
-from keywords import keywords
-from people import people
-from places import places
-from sentiment import sentiment
-from sentiment_hq import sentiment_hq
-from text_tags import text_tags
 from importlib import import_module
+
+from .language import language
+from .personality import personality
+from .political import political
+from .summarization import summarization
+from .twitter_engagement import twitter_engagement
+from .emotion import emotion
+from .organizations import organizations
+from .personas import personas
+from .relevance import relevance
+from .text_features import text_features
+from .keywords import keywords
+from .people import people
+from .places import places
+from .sentiment import sentiment
+from .sentiment_hq import sentiment_hq
+from .text_tags import text_tags
 
 TEXT_APIS = {
     "language": language,

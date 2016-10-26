@@ -1,6 +1,13 @@
+import sys
+import base64
 from base64 import b64encode, b64decode
+import traceback
 import os
-from StringIO import StringIO
+
+try:
+    from StringIO import StringIO
+except:
+    from io import BytesIO
 
 from PIL import Image
 from six import string_types
@@ -15,7 +22,7 @@ def pdf_preprocess(pdf, batch=False):
 
     if os.path.isfile(pdf):
         # a filepath is provided, read and encode
-        return b64encode(open(pdf).read())
+        return b64encode(open(pdf, 'rb').read())
     else:
         # assume pdf is already b64 encoded
         return pdf
@@ -23,10 +30,20 @@ def pdf_preprocess(pdf, batch=False):
 
 def postprocess_image(image):
     raw_data = image.get('data')
-    data = b64decode(raw_data)
+    
     try:
-        return Image.open(StringIO(data))
+        if ((2, 6) <= sys.version_info < (3, 0)):
+            data = b64decode(raw_data)
+            return Image.open(StringIO(data))
+        elif (sys.version_info >= (3, 0)):
+            data = base64.decodestring(bytes(raw_data, 'utf-8'))
+            return Image.open(BytesIO(data))
+        else:
+            raise AssertionError("Unsupport python version: {version}".format(
+                version=str(sys.version_info)
+            ))
     except IOError:
+        traceback.print_exc()
         return None
 
 

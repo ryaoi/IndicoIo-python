@@ -1,7 +1,7 @@
 
 
 from indicoio import people
-from indico_text_base import TextTest
+from .indico_text_base import TextTest
 
 class PeopleTest(TextTest):
 

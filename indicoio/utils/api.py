@@ -1,7 +1,7 @@
 """
 Handles making requests to the IndicoApi Server
 """
-
+import sys
 import json
 import requests
 import warnings
@@ -25,10 +25,9 @@ def batched(iterable, size):
     Split an iterable into constant sized chunks
     Recipe from http://stackoverflow.com/a/8290514
     """
-    sourceiter = iter(iterable)
-    while True:
-        batchiter = islice(sourceiter, size)
-        yield list(chain([batchiter.next()], batchiter))
+    length = len(iterable)
+    for batch_start in range(0, length, size):
+        yield iterable[batch_start:batch_start+size]
 
 
 def standardize_input_data(data):
@@ -89,7 +88,10 @@ def collect_api_results(input_data, url, headers, api, batch_size, kwargs):
                     api=api,
                     timestamp=timestamp
                 )
-                json.dump(results, open(filename, 'wb'))
+                if sys.version_info > (3, 0):
+                    json.dump(results, open(filename, mode='w', encoding='utf-8'))
+                else:
+                    json.dump(results, open(filename, mode='w'))
                 raise IndicoError(
                     "The following error occurred while processing your data: `{err}` "
                     "Partial results have been saved to {filename}".format(

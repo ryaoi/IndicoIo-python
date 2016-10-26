@@ -19,7 +19,9 @@ class Collection(object):
         """
         Thin wrapper around api_handler from `indicoio.utils.api` to add in stored keyword argument to the JSON body
         """
-        keyword_arguments = dict(self.keywords.items() + kwargs.items())
+        keyword_arguments = {}
+        keyword_arguments.update(self.keywords)
+        keyword_arguments.update(kwargs)
         return api_handler(*args, **keyword_arguments)
 
     def add_data(self, data, cloud=None, batch=False, api_key=None, version=None, **kwargs):

@@ -2,8 +2,8 @@ import os
 
 from indicoio import analyze_image
 from indicoio.image import IMAGE_APIS
+from .indico_multi_base import MultiTest
 
-from indico_multi_base import MultiTest
 DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "image")
 
 class AnalyzeImageTest(MultiTest):

@@ -1,7 +1,7 @@
 import os
 
 from indicoio import summarization
-from indico_text_base import TextTest, DIR
+from .indico_text_base import TextTest, DIR
 
 TEXT_DATA = open(os.path.join(DIR, "data", "long_text.txt"), 'rb').read()
 

@@ -2,7 +2,7 @@
 
 
 from indicoio import places
-from indico_text_base import TextTest
+from .indico_text_base import TextTest
 
 class PlacesTest(TextTest):
 

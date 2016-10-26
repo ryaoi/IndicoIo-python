@@ -2,6 +2,7 @@ import os.path
 
 from PIL import Image
 from PIL.PpmImagePlugin import PpmImageFile
+import six
 
 from indicoio import pdf_extraction
 from .indico_pdf_base import PDFTestCase
@@ -16,7 +17,7 @@ class PDFExtractionTestCase(PDFTestCase):
         results = pdf_extraction(PDF)
         assert 'text' in results.keys()
         assert 'metadata' in results.keys()
-        assert isinstance(results.get('text'), basestring)
+        assert isinstance(results.get('text'), six.string_types)
         assert isinstance(results.get('metadata'), dict)
 
     def test_image_support(self):
@@ -36,8 +37,8 @@ class PDFExtractionTestCase(PDFTestCase):
 
     def test_url_support(self):
         url = "https://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf"
-        results = pdf_extraction(PDF)
+        results = pdf_extraction(url)
         assert 'text' in results.keys()
         assert 'metadata' in results.keys()
-        assert isinstance(results.get('text'), basestring)
+        assert isinstance(results.get('text'), six.string_types)
         assert isinstance(results.get('metadata'), dict)

@@ -30,12 +30,10 @@ def test_api_handler(mock_warn):
     assert mock_warn.called_with(mock_response.headers.get('x-warning'))
 
 @patch('indicoio.utils.api.warnings.warn')
-@patch('indicoio.utils.api.create_url')
 @patch('indicoio.utils.api.requests.post', MagicMock(return_value=mock_response))
-def test_local_host(mock_warning, mock_create_url):
+def test_local_host(mock_warning):
     from indicoio.utils.api import api_handler
     import indicoio
     indicoio.config.host = "localhost:8000"
     api_handler("test", cloud=None, api='sentiment')
-    assert mock_create_url.called_with('http')
     indicoio.config.host = "apiv2.indico.io"

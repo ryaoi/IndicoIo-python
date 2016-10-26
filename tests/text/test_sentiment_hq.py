@@ -3,7 +3,7 @@
 
 
 from indicoio import sentiment_hq
-from indico_text_base import TextTest
+from .indico_text_base import TextTest
 
 class SentimentHQTest(TextTest):
 

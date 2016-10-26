@@ -1,6 +1,6 @@
 from indicoio import analyze_text, IndicoError
 from indicoio.text import TEXT_APIS
-from indico_multi_base import MultiTest
+from .indico_multi_base import MultiTest
 
 class AnalyzeTextTest(MultiTest):
     

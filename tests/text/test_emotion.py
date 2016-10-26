@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from indicoio import emotion
-from indico_text_base import TextTest
+from .indico_text_base import TextTest
 
 class EmotionTest(TextTest):
 

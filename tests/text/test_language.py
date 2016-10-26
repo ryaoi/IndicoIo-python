@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from indicoio import language
-from indico_text_base import TextTest
+from .indico_text_base import TextTest
 
 LANGUAGES = set([
     'English', 'Spanish', 'Tagalog', 'Esperanto', 'French',

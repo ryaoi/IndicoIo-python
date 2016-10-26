@@ -3,7 +3,7 @@
 
 
 from indicoio import text_features
-from indico_text_base import TextTest
+from .indico_text_base import TextTest
 
 class TextFeaturesTest(TextTest):
 

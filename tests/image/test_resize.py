@@ -1,9 +1,10 @@
-from indicoio.utils.image import image_preprocess
-from PIL import Image
 import os, base64
+
+from PIL import Image
 from six import BytesIO
 
-from indico_image_base import ImageTest, DIR
+from indicoio.utils.image import image_preprocess
+from .indico_image_base import ImageTest, DIR
 
 class ResizeTests(ImageTest):
     """
