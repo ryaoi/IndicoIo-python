@@ -9,11 +9,6 @@ try:
 except:
     from io import BytesIO
 
-try:
-    from StringIO import StringIO
-except ImportError:
-    from io import StringIO
-
 from PIL import Image
 from six import string_types
 
