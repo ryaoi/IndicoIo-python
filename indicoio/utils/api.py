@@ -101,10 +101,10 @@ def collect_api_results(input_data, url, headers, api, batch_size, kwargs):
                 )
         return results
     else:
-        return send_request(input_data, url, headers, kwargs)
+        return send_request(input_data, api, url, headers, kwargs)
 
 
-def send_request(input_data, url, headers, kwargs):
+def send_request(input_data, api, url, headers, kwargs):
     """
     Use the requests library to send of an HTTP call to the indico servers
     """
