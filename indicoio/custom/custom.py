@@ -1,5 +1,4 @@
 import time
-from itertools import izip
 
 from ..utils.api import api_handler
 from ..utils.decorators import detect_batch
@@ -48,7 +47,7 @@ def _pack_data(X, Y, metadata):
     """
     if not any(metadata):
         # legacy list of list format is acceptable
-        return zip(X, Y)
+        return list(zip(X, Y))
 
     else:
         # newer dictionary-based format is required in order to save metadata
@@ -58,7 +57,7 @@ def _pack_data(X, Y, metadata):
                     'target': y,
                     'metadata': meta
                 }
-                for x, y, meta in izip(X, Y, metadata)
+                for x, y, meta in zip(X, Y, metadata)
             ]
 
 
@@ -159,6 +158,32 @@ class Collection(object):
         batch = detect_batch(data)
         data = image_preprocess(data, batch=batch)
         url_params = {"batch": batch, "api_key": api_key, "version": version}
+        return self._api_handler(data, cloud=cloud, api="custom", url_params=url_params, **kwargs)
+
+
+    def explain(self, data, cloud=None, batch=False, api_key=None, version=None, **kwargs):
+        """
+        This is the explain endpoint. This allows for predictions that also include information
+        about the training data that led to the models decision.
+
+        Inputs
+        data - String: The text example being provided to the API. As a general rule, the data should be as
+          similar to the examples given to the train function (above) as possible. Because language
+          in different domains is used very differently the accuracy will generally drop as the
+          difference between this text and the training text increases. Base64 encoded image data, image urls, and
+          text content are all valid.
+        domain (optional) - String: This is an identifier that helps determine the appropriate techniques for indico
+          to use behind the scenes to train your model.  One of {"standard", "topics"}.
+        api_key (optional) - String: Your API key, required only if the key has not been declared
+          elsewhere. This allows the API to recognize a request as yours and automatically route it
+          to the appropriate destination.
+        cloud (optional) - String: Your private cloud domain, required only if the key has not been declared
+          elsewhere. This allows the API to recognize a request as yours and automatically route it
+          to the appropriate destination.
+        """
+        batch = detect_batch(data)
+        data = image_preprocess(data, batch=batch)
+        url_params = {"batch": batch, "api_key": api_key, "version": version, "method": "explain"}
         return self._api_handler(data, cloud=cloud, api="custom", url_params=url_params, **kwargs)
 
 
