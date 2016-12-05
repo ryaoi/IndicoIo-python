@@ -1,9 +1,65 @@
 import time
+from itertools import izip
 
 from ..utils.api import api_handler
 from ..utils.decorators import detect_batch
 from ..utils.image import image_preprocess
 from ..utils.errors import IndicoError
+
+
+
+def _unpack_data(data):
+    """
+    Break Xs, Ys, and metadata out into separate lists for data preprocessing.
+    Run basic data validation.
+    """
+    xs = [None] * len(data)
+    ys = [None] * len(data)
+    metadata = [None] * len(data)
+    for idx, example in enumerate(data):
+        if isinstance(example, (list, tuple)):
+            try:
+                xs[idx] = example[0]
+                ys[idx] = example[1]
+                metadata[idx] = None
+            except IndexError:
+                raise IndicoError(
+                    "Invalid input data.  Please ensure input data is "
+                    "formatted as a list of `[data, target]` pairs."
+                )
+        if isinstance(example, dict):
+            try:
+                xs[idx] = example['data']
+                ys[idx] = example['target']
+                metadata[idx] = example.get('metadata', {})
+            except KeyError:
+                raise IndicoError(
+                    "Invalid input data.  Please ensure input data is "
+                    "formatted as a list of dicts with `data` and `target` keys"
+                )
+
+    return xs, ys, metadata
+
+
+def _pack_data(X, Y, metadata):
+    """
+    After modifying / preprocessing inputs,
+    reformat the data in preparation for JSON serialization
+    """
+    if not any(metadata):
+        # legacy list of list format is acceptable
+        return zip(X, Y)
+
+    else:
+        # newer dictionary-based format is required in order to save metadata
+            return [
+                {
+                    'data': x,
+                    'target': y,
+                    'metadata': meta
+                }
+                for x, y, meta in izip(X, Y, metadata)
+            ]
 
 
 class Collection(object):
@@ -46,16 +102,19 @@ class Collection(object):
           elsewhere. This allows the API to recognize a request as yours and automatically route it
           to the appropriate destination.
         """
-        batch = isinstance(data[0], (list, tuple))
-        if batch:
-            data = map(list, data)
-            X, Y = zip(*data)
-            X = image_preprocess(X, batch=batch)
-            # must type cast map obj to list for python3 compatability
-            data = list(map(list, zip(X, Y)))
-        else:
-            data = list(data)
-            data[0] = image_preprocess(data[0], batch=batch)
+        batch = isinstance(data[0], (list, tuple, dict))
+
+        # standarize format for preprocessing batch of examples
+        if not batch:
+          data = [data]
+
+        X, Y, metadata = _unpack_data(data)
+        X = image_preprocess(X, batch=True)
+        data = _pack_data(X, Y, metadata)
+
+        # if a single example was passed in, unpack
+        if not batch:
+          data = data[0]
 
         url_params = {"batch": batch, "api_key": api_key, "version": version, 'method': "add_data"}
         return self._api_handler(data, cloud=cloud, api="custom", url_params=url_params, **kwargs)
