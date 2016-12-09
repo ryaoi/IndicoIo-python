@@ -6,6 +6,37 @@ from ..utils.image import image_preprocess
 from ..utils.errors import IndicoError
 
 
+def _unpack_list(example):
+    """
+    Input data format standardization
+    """
+    try:
+        x = example[0]
+        y = example[1]
+        meta = None
+        return x, y, meta
+    except IndexError:
+        raise IndicoError(
+            "Invalid input data.  Please ensure input data is "
+            "formatted as a list of `[data, target]` pairs."
+        )
+
+
+def _unpack_dict(example):
+    """
+    Input data format standardization
+    """
+    try:
+        x = example['data']
+        y = example['target']
+        meta = example.get('metadata', {})
+        return x, y, meta
+    except KeyError:
+        raise IndicoError(
+            "Invalid input data.  Please ensure input data is "
+            "formatted as a list of dicts with `data` and `target` keys"
+        )
+
 
 def _unpack_data(data):
     """
@@ -17,25 +48,9 @@ def _unpack_data(data):
     metadata = [None] * len(data)
     for idx, example in enumerate(data):
         if isinstance(example, (list, tuple)):
-            try:
-                xs[idx] = example[0]
-                ys[idx] = example[1]
-                metadata[idx] = None
-            except IndexError:
-                raise IndicoError(
-                    "Invalid input data.  Please ensure input data is "
-                    "formatted as a list of `[data, target]` pairs."
-                )
+            xs[idx], ys[idx], metadata[idx] = _unpack_list(example)
         if isinstance(example, dict):
-            try:
-                xs[idx] = example['data']
-                ys[idx] = example['target']
-                metadata[idx] = example.get('metadata', {})
-            except KeyError:
-                raise IndicoError(
-                    "Invalid input data.  Please ensure input data is "
-                    "formatted as a list of dicts with `data` and `target` keys"
-                )
+            xs[idx], ys[idx], metadata[idx] = _unpack_dict(example)
 
     return xs, ys, metadata
 
@@ -101,6 +116,8 @@ class Collection(object):
           elsewhere. This allows the API to recognize a request as yours and automatically route it
           to the appropriate destination.
         """
+        if not len(data):
+          raise IndicoError("No input data provided.")
         batch = isinstance(data[0], (list, tuple, dict))
 
         # standarize format for preprocessing batch of examples
