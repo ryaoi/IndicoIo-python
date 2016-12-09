@@ -80,7 +80,7 @@ def collect_api_results(input_data, url, headers, api, batch_size, kwargs):
         results = []
         for batch in batched(input_data, size=batch_size):
             try:
-                results.extend(send_request(batch, url, headers, kwargs))
+                results.extend(send_request(batch, api, url, headers, kwargs))
             except IndicoError as e:
                 # Log results so far to file
                 timestamp = datetime.datetime.now().strftime('%Y-%m-%d-%H:%M:%S')

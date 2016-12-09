@@ -6,6 +6,76 @@ from ..utils.image import image_preprocess
 from ..utils.errors import IndicoError
 
 
+def _unpack_list(example):
+    """
+    Input data format standardization
+    """
+    try:
+        x = example[0]
+        y = example[1]
+        meta = None
+        return x, y, meta
+    except IndexError:
+        raise IndicoError(
+            "Invalid input data.  Please ensure input data is "
+            "formatted as a list of `[data, target]` pairs."
+        )
+
+
+def _unpack_dict(example):
+    """
+    Input data format standardization
+    """
+    try:
+        x = example['data']
+        y = example['target']
+        meta = example.get('metadata', {})
+        return x, y, meta
+    except KeyError:
+        raise IndicoError(
+            "Invalid input data.  Please ensure input data is "
+            "formatted as a list of dicts with `data` and `target` keys"
+        )
+
+
+def _unpack_data(data):
+    """
+    Break Xs, Ys, and metadata out into separate lists for data preprocessing.
+    Run basic data validation.
+    """
+    xs = [None] * len(data)
+    ys = [None] * len(data)
+    metadata = [None] * len(data)
+    for idx, example in enumerate(data):
+        if isinstance(example, (list, tuple)):
+            xs[idx], ys[idx], metadata[idx] = _unpack_list(example)
+        if isinstance(example, dict):
+            xs[idx], ys[idx], metadata[idx] = _unpack_dict(example)
+
+    return xs, ys, metadata
+
+
+def _pack_data(X, Y, metadata):
+    """
+    After modifying / preprocessing inputs,
+    reformat the data in preparation for JSON serialization
+    """
+    if not any(metadata):
+        # legacy list of list format is acceptable
+        return list(zip(X, Y))
+
+    else:
+        # newer dictionary-based format is required in order to save metadata
+            return [
+                {
+                    'data': x,
+                    'target': y,
+                    'metadata': meta
+                }
+                for x, y, meta in zip(X, Y, metadata)
+            ]
+
+
 class Collection(object):
 
     def __init__(self, collection, *args, **kwargs):
@@ -46,16 +116,21 @@ class Collection(object):
           elsewhere. This allows the API to recognize a request as yours and automatically route it
           to the appropriate destination.
         """
-        batch = isinstance(data[0], (list, tuple))
-        if batch:
-            data = map(list, data)
-            X, Y = zip(*data)
-            X = image_preprocess(X, batch=batch)
-            # must type cast map obj to list for python3 compatability
-            data = list(map(list, zip(X, Y)))
-        else:
-            data = list(data)
-            data[0] = image_preprocess(data[0], batch=batch)
+        if not len(data):
+          raise IndicoError("No input data provided.")
+        batch = isinstance(data[0], (list, tuple, dict))
+
+        # standarize format for preprocessing batch of examples
+        if not batch:
+          data = [data]
+
+        X, Y, metadata = _unpack_data(data)
+        X = image_preprocess(X, batch=True)
+        data = _pack_data(X, Y, metadata)
+
+        # if a single example was passed in, unpack
+        if not batch:
+          data = data[0]
 
         url_params = {"batch": batch, "api_key": api_key, "version": version, 'method': "add_data"}
         return self._api_handler(data, cloud=cloud, api="custom", url_params=url_params, **kwargs)
@@ -100,6 +175,32 @@ class Collection(object):
         batch = detect_batch(data)
         data = image_preprocess(data, batch=batch)
         url_params = {"batch": batch, "api_key": api_key, "version": version}
+        return self._api_handler(data, cloud=cloud, api="custom", url_params=url_params, **kwargs)
+
+
+    def explain(self, data, cloud=None, batch=False, api_key=None, version=None, **kwargs):
+        """
+        This is the explain endpoint. This allows for predictions that also include information
+        about the training data that led to the models decision.
+
+        Inputs
+        data - String: The text example being provided to the API. As a general rule, the data should be as
+          similar to the examples given to the train function (above) as possible. Because language
+          in different domains is used very differently the accuracy will generally drop as the
+          difference between this text and the training text increases. Base64 encoded image data, image urls, and
+          text content are all valid.
+        domain (optional) - String: This is an identifier that helps determine the appropriate techniques for indico
+          to use behind the scenes to train your model.  One of {"standard", "topics"}.
+        api_key (optional) - String: Your API key, required only if the key has not been declared
+          elsewhere. This allows the API to recognize a request as yours and automatically route it
+          to the appropriate destination.
+        cloud (optional) - String: Your private cloud domain, required only if the key has not been declared
+          elsewhere. This allows the API to recognize a request as yours and automatically route it
+          to the appropriate destination.
+        """
+        batch = detect_batch(data)
+        data = image_preprocess(data, batch=batch)
+        url_params = {"batch": batch, "api_key": api_key, "version": version, "method": "explain"}
         return self._api_handler(data, cloud=cloud, api="custom", url_params=url_params, **kwargs)
 
 
