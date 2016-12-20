@@ -60,4 +60,6 @@ v0.16.3 Tue Sep 27 -- Add summarization API support
 v1.0.0 Thu Sep 29 -- Refactor for stable release
 v1.0.1 Wed Oct 19 -- Support for PDF Extraction API
 v1.0.3 Tue Oct 25 -- Fix Python3 support issues
-v1.0.4 Tue Oct 25 -- Fix setup.py to include pdf module
+v1.0.4 Mon Dec 12 -- Fix setup.py to include pdf module
+v1.0.5 Mon Dec 19 -- Allow passing in more complex data to custom collections
+v1.0.6 Tue Dec 20 -- Vectorize data with custom collections domains
