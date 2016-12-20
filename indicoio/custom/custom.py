@@ -393,3 +393,13 @@ def collections(cloud=None, api_key=None, version=None, **kwargs):
     """
     url_params = {"batch": False, "api_key": api_key, "version": version, "method": "collections"}
     return api_handler(None, cloud=cloud, api="custom", url_params=url_params, **kwargs)
+
+
+def vectorize(data, cloud=None, api_key=None, version=None, **kwargs):
+    """
+    Support for raw features from the custom collections API
+    """
+    batch = detect_batch(data)
+    data = image_preprocess(data, batch=batch)
+    url_params = {"batch": batch, "api_key": api_key, "version": version, "method": "vectorize"}
+    return api_handler(data, cloud=cloud, api="custom", url_params=url_params, **kwargs)

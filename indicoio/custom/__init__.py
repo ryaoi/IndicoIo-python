@@ -1,1 +1,1 @@
-from .custom import Collection, collections
+from .custom import Collection, collections, vectorize
