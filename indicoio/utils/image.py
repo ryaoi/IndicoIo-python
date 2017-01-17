@@ -21,7 +21,7 @@ def image_preprocess(image, size=None, min_axis=None, batch=False):
 
     if isinstance(image, string_types):
         b64_or_url = re.sub('^data:image/.+;base64,', '', image)
-        if os.path.isfile(image):
+        if os.path.isfile(image.encode("utf-8", "ignore")):
             # check type of element
             out_image = Image.open(image)
         else:
