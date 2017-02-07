@@ -11,6 +11,17 @@ from indicoio.utils.errors import IndicoError
 
 B64_PATTERN = re.compile("^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)")
 
+
+def file_exists(filename):
+    """
+    Check if a file exists (and don't error out on unicode inputs)
+    """
+    try:
+        return os.path.isfile(filename)
+    except (UnicodeDecodeError, UnicodeEncodeError):
+        return False
+
+
 def image_preprocess(image, size=None, min_axis=None, batch=False):
     """
     Takes an image and prepares it for sending to the api including
@@ -21,7 +32,8 @@ def image_preprocess(image, size=None, min_axis=None, batch=False):
 
     if isinstance(image, string_types):
         b64_or_url = re.sub('^data:image/.+;base64,', '', image)
-        if os.path.isfile(image.encode("utf-8", "ignore")):
+
+        if file_exists(image):
             # check type of element
             out_image = Image.open(image)
         else:
