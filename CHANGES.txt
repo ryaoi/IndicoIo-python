@@ -69,3 +69,4 @@ v1.0.6 Tue Dec 20 -- Vectorize data with custom collections domains
 v1.0.7 Tue Jan 17 -- Path checking no longer crashes on unicode
 v1.0.8 Tue Feb 07 -- Fix unicode encoding/decoding exception
 v1.0.9 Wed July 28 -- Fix path check on windows
+
