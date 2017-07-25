@@ -1,7 +1,8 @@
 from functools import wraps, partial
 import warnings
 
-Version, version, __version__, VERSION = ('1.0.9',) * 4
+
+Version, version, __version__, VERSION = ('1.1.0',) * 4
 
 JSON_HEADERS = {
     'Content-type': 'application/json',
@@ -14,5 +15,6 @@ from .text import *
 from .image import *
 from .multi import *
 from .pdf import *
+from .docx import *
 
 from indicoio.utils.errors import IndicoError
