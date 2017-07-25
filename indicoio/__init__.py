@@ -14,5 +14,6 @@ from .text import *
 from .image import *
 from .multi import *
 from .pdf import *
+from .docx import *
 
 from indicoio.utils.errors import IndicoError
