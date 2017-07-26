@@ -9,7 +9,7 @@ except ImportError:
 
 setup(
     name="IndicoIo",
-    version="1.1.0",
+    version="1.1.1",
     packages=[
         "indicoio",
         "indicoio.text",
@@ -24,7 +24,7 @@ setup(
     description="""A Python Wrapper for indico. Use pre-built state of the art machine learning algorithms with a single line of code.""",
     license="MIT License (See LICENSE)",
     long_description=open("README.rst").read(),
-    url="https://github.com/IndicoDataSolutions/indicoio-python",
+    url="https://github.com/IndicoDataSolutions/IndicoIo-python",
     author="Alec Radford, Slater Victoroff, Aidan McLaughlin, Madison May, Anne Carlson",
     author_email="engineering@indico.io",
     classifiers = [
