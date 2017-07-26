@@ -18,6 +18,7 @@ setup(
         "indicoio.utils",
         "indicoio.custom",
         "indicoio.pdf",
+        "indicoio.docx",
         "tests",
     ],
     description="""A Python Wrapper for indico. Use pre-built state of the art machine learning algorithms with a single line of code.""",
