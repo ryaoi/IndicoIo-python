@@ -9,7 +9,7 @@ except ImportError:
 
 setup(
     name="IndicoIo",
-    version="1.1.0",
+    version="1.1.1",
     packages=[
         "indicoio",
         "indicoio.text",
@@ -18,6 +18,7 @@ setup(
         "indicoio.utils",
         "indicoio.custom",
         "indicoio.pdf",
+        "indicoio.docx",
         "tests",
     ],
     description="""A Python Wrapper for indico. Use pre-built state of the art machine learning algorithms with a single line of code.""",
