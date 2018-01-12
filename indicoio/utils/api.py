@@ -115,7 +115,7 @@ def send_request(input_data, api, url, headers, kwargs):
     data.update(**kwargs)
     json_data = json.dumps(data)
 
-    response = requests.post(url, data=json_data, headers=headers)
+    response = requests.post(url, data=json_data, headers=headers, verify=False)
 
     warning = response.headers.get('x-warning')
     if warning:
