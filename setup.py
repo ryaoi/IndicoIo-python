@@ -14,8 +14,7 @@ except ImportError:
 REQUIREMENTS = [
     "requests >= 1.2.3",
     "six >= 1.3.0",
-    "pillow >= 2.8.1",
-    "mock >= 1.3.0, < 2.0.0"
+    "pillow >= 2.8.1"
 ]
 
 # shim for futures support
@@ -62,5 +61,10 @@ setup(
         "six >= 1.3.0",
         "pillow >= 2.8.1"
     ],
+    tests_require=[
+        "mock >= 1.3.0, < 2.0.0",
+        "nose >= 1.0"
+    ],
+    test_suite="nose.collector",
     install_requires=REQUIREMENTS
 )
