@@ -2,7 +2,7 @@ import time
 
 from ..utils.api import api_handler
 from ..utils.decorators import detect_batch
-from ..utils.image import image_preprocess
+from ..utils.preprocessing import data_preprocess
 from ..utils.errors import IndicoError
 
 
@@ -34,7 +34,8 @@ def _unpack_dict(example):
     except KeyError:
         raise IndicoError(
             "Invalid input data.  Please ensure input data is "
-            "formatted as a list of dicts with `data` and `target` keys"
+            "formatted as a list of dicts with `data` and `target` keys. "
+            "A `metadata` key may optionally be included."
         )
 
 
@@ -125,7 +126,7 @@ class Collection(object):
           data = [data]
 
         X, Y, metadata = _unpack_data(data)
-        X = image_preprocess(X, batch=True)
+        X = data_preprocess(X, batch=True)
         data = _pack_data(X, Y, metadata)
 
         # if a single example was passed in, unpack
@@ -173,7 +174,7 @@ class Collection(object):
           to the appropriate destination.
         """
         batch = detect_batch(data)
-        data = image_preprocess(data, batch=batch)
+        data = data_preprocess(data, batch=batch)
         url_params = {"batch": batch, "api_key": api_key, "version": version}
         return self._api_handler(data, cloud=cloud, api="custom", url_params=url_params, **kwargs)
 
@@ -199,7 +200,7 @@ class Collection(object):
           to the appropriate destination.
         """
         batch = detect_batch(data)
-        data = image_preprocess(data, batch=batch)
+        data = data_preprocess(data, batch=batch)
         url_params = {"batch": batch, "api_key": api_key, "version": version, "method": "explain"}
         return self._api_handler(data, cloud=cloud, api="custom", url_params=url_params, **kwargs)
 
@@ -249,7 +250,7 @@ class Collection(object):
           to the appropriate destination.
         """
         batch = detect_batch(data)
-        data = image_preprocess(data, batch=batch)
+        data = data_preprocess(data, batch=batch)
         url_params = {"batch": batch, "api_key": api_key, "version": version, 'method': 'remove_example'}
         return self._api_handler(data, cloud=cloud, api="custom", url_params=url_params, **kwargs)
 
@@ -400,6 +401,6 @@ def vectorize(data, cloud=None, api_key=None, version=None, **kwargs):
     Support for raw features from the custom collections API
     """
     batch = detect_batch(data)
-    data = image_preprocess(data, batch=batch)
+    data = data_preprocess(data, batch=batch)
     url_params = {"batch": batch, "api_key": api_key, "version": version, "method": "vectorize"}
     return api_handler(data, cloud=cloud, api="custom", url_params=url_params, **kwargs)
