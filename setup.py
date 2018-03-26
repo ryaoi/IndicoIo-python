@@ -43,7 +43,7 @@ setup(
     long_description=open("README.rst").read(),
     url="https://github.com/IndicoDataSolutions/indicoio-python",
     author="Alec Radford, Slater Victoroff, Aidan McLaughlin, Madison May, Anne Carlson",
-    author_email="engineering@indico.io",<<<<<<< madison/py3-setup
+    author_email="engineering@indico.io",
     classifiers = [
         "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Developers",
@@ -51,7 +51,7 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Natural Language :: English",
         "Operating System :: OS Independent",
-        "Programming Language :: Python",ol
+        "Programming Language :: Python",
         "Topic :: Scientific/Engineering",
         "Topic :: Scientific/Engineering :: Image Recognition",
         "Topic :: Scientific/Engineering :: Information Analysis",
