@@ -23,10 +23,6 @@ if PY2:
     REQUIREMENTS.append(
         "futures >= 3.0.0"
     )
-if PY3:
-    REQUIREMENTS.append(
-        "colr >= 0.8.1"
-    )
 
 setup(
     name="IndicoIo",
@@ -55,7 +51,7 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Natural Language :: English",
         "Operating System :: OS Independent",
-        "Programming Language :: Python",
+        "Programming Language :: Python",ol
         "Topic :: Scientific/Engineering",
         "Topic :: Scientific/Engineering :: Image Recognition",
         "Topic :: Scientific/Engineering :: Information Analysis",
