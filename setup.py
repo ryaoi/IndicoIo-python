@@ -3,7 +3,8 @@ Setup for indico apis
 """
 import sys
 
-PY3 = True if sys.version_info[0] == 3 else False
+PY2 = True if sys.version_info[0] == 2 else False
+PY3 = not PY2
 
 try:
     from setuptools import setup
@@ -18,7 +19,7 @@ REQUIREMENTS = [
 ]
 
 # shim for futures support
-if not PY3:
+if PY2:
     REQUIREMENTS.append(
         "futures >= 3.0.0"
     )
