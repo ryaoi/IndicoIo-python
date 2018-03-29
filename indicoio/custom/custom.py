@@ -1,4 +1,5 @@
 import time
+import sys
 
 from ..utils.api import api_handler
 from ..utils.decorators import detect_batch
@@ -77,6 +78,45 @@ def _pack_data(X, Y, metadata):
             ]
 
 
+def visualize_explanation(explanation, label=None):
+    """
+    Given the output of the explain() endpoint, produces a terminal visual that plots response strength over a sequence
+    """
+    if not sys.version_info[:2] >= (3, 5):
+      raise IndicoError("Python >= 3.5+ is required for explanation visualization")
+
+    try:
+      from colr import Colr as C
+    except ImportError:
+      raise IndicoError("Package colr >= 0.8.1 is required for explanation visualization.")
+
+    cursor = 0
+    text = explanation['text']
+    for token in explanation.get('token_predictions'):
+        try:
+            class_confidence = token.get('prediction')[label]
+        except KeyError:
+            raise IndicoError("Invalid label: {}".format(label))
+
+        if class_confidence > 0.5:
+            fg_color = (255, 255, 255)
+        else:
+            fg_color = (0, 0, 0)
+        rg_value = 255 - int(class_confidence * 255)
+        token_end = token.get('token').get('end')
+        token_text = text[cursor:token_end]
+        cursor = token_end
+        sys.stdout.write(
+          str(C().b_rgb(
+            rg_value, rg_value, 255
+          ).rgb(
+            fg_color[0], fg_color[1], fg_color[2], token_text
+          ))
+        )
+    sys.stdout.write("\n")
+    sys.stdout.flush()
+
+
 class Collection(object):
 
     def __init__(self, collection, *args, **kwargs):
@@ -136,7 +176,6 @@ class Collection(object):
         url_params = {"batch": batch, "api_key": api_key, "version": version, 'method': "add_data"}
         return self._api_handler(data, cloud=cloud, api="custom", url_params=url_params, **kwargs)
 
-
     def train(self, cloud=None, batch=False, api_key=None, version=None, **kwargs):
         """
         This is the basic training endpoint. Given an existing dataset this endpoint will train a model.
@@ -151,7 +190,6 @@ class Collection(object):
         """
         url_params = {"batch": batch, "api_key": api_key, "version": version, 'method': "train"}
         return self._api_handler(self.keywords['collection'], cloud=cloud, api="custom", url_params=url_params, **kwargs)
-
 
     def predict(self, data, cloud=None, batch=False, api_key=None, version=None, **kwargs):
         """
@@ -178,7 +216,6 @@ class Collection(object):
         url_params = {"batch": batch, "api_key": api_key, "version": version}
         return self._api_handler(data, cloud=cloud, api="custom", url_params=url_params, **kwargs)
 
-
     def explain(self, data, cloud=None, batch=False, api_key=None, version=None, **kwargs):
         """
         This is the explain endpoint. This allows for predictions that also include information
@@ -204,7 +241,6 @@ class Collection(object):
         url_params = {"batch": batch, "api_key": api_key, "version": version, "method": "explain"}
         return self._api_handler(data, cloud=cloud, api="custom", url_params=url_params, **kwargs)
 
-
     def clear(self, cloud=None, api_key=None, version=None, **kwargs):
         """
         This is an API made to remove all of the data associated from a given colletion. If there's been a data
@@ -223,14 +259,12 @@ class Collection(object):
         url_params = {"batch": False, "api_key": api_key, "version": version, "method": "clear_collection"}
         return self._api_handler(None, cloud=cloud, api="custom", url_params=url_params, **kwargs)
 
-
     def info(self, cloud=None, api_key=None, version=None, **kwargs):
         """
         Return the current state of the model associated with a given collection
         """
         url_params = {"batch": False, "api_key": api_key, "version": version, "method": "info"}
         return self._api_handler(None, cloud=cloud, api="custom", url_params=url_params, **kwargs)
-
 
     def remove_example(self, data, cloud=None, batch=False, api_key=None, version=None, **kwargs):
         """
