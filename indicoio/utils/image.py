@@ -50,7 +50,7 @@ def image_preprocess(image, size=None, min_axis=None, batch=False):
             raise IndicoError("Please ensure the numpy array is acceptable by PIL. Values must be between 0 and 1 or between 0 and 255 in greyscale, rgb, or rgba format.")
 
     else:
-        raise IndicoError("Image must be a filepath, url, base64 encoded string, or a numpy array")
+        raise IndicoError("Data type not recognized. Received: %s" % type(image))
 
     if size or min_axis:
         out_image = resize_image(out_image, size, min_axis)
